@@ -36,8 +36,7 @@ def submit_complaint():
             tid = gen_ticket()
             uid = session.get('user_id')
             cur.execute("INSERT INTO complaints (ticket_id,user_id,fullname,email,category,priority,subject,description) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
-                (tid, uid, request.form.get('fullname'), request.form.get('email'), request.form.get('category'),
-                 request.form.get('priority','Medium'), request.form.get('subject'), request.form.get('description')))
+                (tid, uid, request.form.get('fullname'), request.form.get('email'), request.form.get('category'), request.form.get('priority','Medium'), request.form.get('subject'), request.form.get('description')))
             conn.commit()
             flash(f'Complaint submitted! Ticket: {tid}', 'success')
         finally:
@@ -103,8 +102,7 @@ def student_register():
         try:
             pw = request.form.get('password','')
             cur.execute("INSERT INTO users (fullname,email,phone,plain_password,password,role) VALUES (%s,%s,%s,%s,%s,'student')",
-                (request.form.get('fullname'), request.form.get('email'), request.form.get('phone'),
-                 pw, hash_pw(pw)))
+                (request.form.get('fullname'), request.form.get('email'), request.form.get('phone'), pw, hash_pw(pw)))
             conn.commit()
             flash('Registration successful! Please login.', 'success')
         except pymysql.err.IntegrityError:
@@ -163,8 +161,7 @@ def admin_register():
         try:
             pw = request.form.get('password','')
             cur.execute("INSERT INTO users (fullname,email,phone,plain_password,password,role) VALUES (%s,%s,%s,%s,%s,'admin')",
-                (request.form.get('fullname'), request.form.get('email'), request.form.get('phone'),
-                 pw, hash_pw(pw)))
+                (request.form.get('fullname'), request.form.get('email'), request.form.get('phone'), pw, hash_pw(pw)))
             conn.commit()
             flash('Admin registration successful! Please login.', 'success')
         except pymysql.err.IntegrityError:
