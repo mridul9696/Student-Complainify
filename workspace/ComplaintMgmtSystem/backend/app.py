@@ -1,4 +1,15 @@
-import os, csv, io, json, pymysql, hashlib, smtplib, ssl, sys, random, uuid
+import csv
+import hashlib
+import io
+import json
+import os
+import random
+import smtplib
+import ssl
+import sys
+import uuid
+
+import pymysql
 from email.message import EmailMessage
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory, make_response
 from datetime import timedelta, datetime
