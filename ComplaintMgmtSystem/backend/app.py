@@ -497,7 +497,7 @@ def reset_password():
             cur.close()
             conn.close()
             return render_template('reset_password.html')
-        cur.execute("UPDATE users SET password=%s, plain_password=NULL WHERE email=%s",
+        cur.execute("UPDATE users SET password=%s WHERE email=%s",
             (hash_pw(new_pw), email))
         cur.execute("UPDATE otps SET used=1 WHERE email=%s AND otp=%s", (email, otp))
         conn.commit()
@@ -579,7 +579,7 @@ def student_register():
         conn = get_db()
         cur = conn.cursor()
         try:
-            cur.execute("INSERT INTO users (fullname,email,phone,plain_password,password,role,college) VALUES (%s,%s,%s,NULL,%s,'student',%s)",
+            cur.execute("INSERT INTO users (fullname,email,phone,password,role,college) VALUES (%s,%s,%s,%s,'student',%s)",
                 (fullname, email, phone, hash_pw(pw), college or None))
             conn.commit()
             flash('Registration successful! Please login.', 'success')
@@ -692,7 +692,7 @@ def student_settings():
             elif new_pw != confirm:
                 flash('Passwords do not match.', 'error')
             else:
-                cur.execute("UPDATE users SET password=%s, plain_password=NULL WHERE id=%s",
+                cur.execute("UPDATE users SET password=%s WHERE id=%s",
                     (hash_pw(new_pw), session['user_id']))
                 conn.commit()
                 flash('Password changed!', 'success')
@@ -760,7 +760,7 @@ def admin_register():
         conn = get_db()
         cur = conn.cursor()
         try:
-            cur.execute("INSERT INTO users (fullname,email,phone,plain_password,password,role) VALUES (%s,%s,%s,NULL,%s,'admin')",
+            cur.execute("INSERT INTO users (fullname,email,phone,password,role) VALUES (%s,%s,%s,%s,'admin')",
                 (fullname, email, phone, hash_pw(pw)))
             conn.commit()
             flash('Admin registration successful! Please login.', 'success')
@@ -1129,7 +1129,7 @@ def admin_settings():
             elif new_pw != confirm:
                 flash('Passwords do not match.', 'error')
             else:
-                cur.execute("UPDATE users SET password=%s, plain_password=NULL WHERE id=%s",
+                cur.execute("UPDATE users SET password=%s WHERE id=%s",
                     (hash_pw(new_pw), session['user_id']))
                 conn.commit()
                 flash('Password changed!', 'success')
@@ -1927,7 +1927,7 @@ def admin_reset_user_password(uid):
         return redirect(url_for('admin_users'))
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("UPDATE users SET password=%s, plain_password=NULL WHERE id=%s",
+    cur.execute("UPDATE users SET password=%s WHERE id=%s",
         (hash_pw(new_pw), uid))
     conn.commit()
     cur.close()
@@ -2130,7 +2130,6 @@ def init_db():
             fullname VARCHAR(100) NOT NULL,
             email VARCHAR(100) NOT NULL UNIQUE,
             phone VARCHAR(15),
-            plain_password VARCHAR(100),
             password VARCHAR(255) NOT NULL,
             role ENUM('student','admin') NOT NULL DEFAULT 'student',
             college VARCHAR(100) DEFAULT NULL,

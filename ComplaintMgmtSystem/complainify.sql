@@ -29,7 +29,6 @@ CREATE TABLE IF NOT EXISTS users (
     fullname VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     phone VARCHAR(15),
-    plain_password VARCHAR(100),
     password VARCHAR(255) NOT NULL,
     role ENUM('student','admin') NOT NULL DEFAULT 'student',
     college VARCHAR(100) DEFAULT NULL,
@@ -135,9 +134,9 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 );
 
 -- Sample users
-INSERT IGNORE INTO users (id, fullname, email, phone, plain_password, password, role) VALUES
-(1, 'Ram Sharma', 'ram@gmail.com', '9812345678', 'pass123', SHA2('pass123', 256), 'student'),
-(2, 'Admin User', 'admin@complainify.edu', '9800000000', 'admin123', SHA2('admin123', 256), 'admin');
+INSERT IGNORE INTO users (id, fullname, email, phone, password, role) VALUES
+(1, 'Ram Sharma', 'ram@gmail.com', '9812345678', SHA2('pass123', 256), 'student'),
+(2, 'Admin User', 'admin@complainify.edu', '9800000000', SHA2('admin123', 256), 'admin');
 
 -- Sample complaints
 INSERT IGNORE INTO complaints (ticket_id, user_id, fullname, email, category, priority, subject, description, status, sentiment, sentiment_score) VALUES

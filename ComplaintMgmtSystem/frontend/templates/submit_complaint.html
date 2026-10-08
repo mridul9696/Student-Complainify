@@ -133,6 +133,11 @@ clearTimeout(debounceTimer);
 const preview = document.getElementById('aiPreview');
 const similar = document.getElementById('similarComplaints');
 const meta = document.getElementById('aiMeta');
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (ch) {
+    return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[ch];
+  });
+}
 if (text.trim().length < 20) { preview.classList.add('hidden'); similar.classList.add('hidden'); meta.classList.add('hidden'); return; }
 debounceTimer = setTimeout(() => {
 fetch('{{ url_for("api_predict_top3") }}', {
@@ -174,7 +179,7 @@ meta.innerHTML = '<div class="font-semibold mb-2">AI Analysis:</div>' +
 '<div class="mt-1 pt-1 border-t border-green-200 text-green-700">Reason: ' + a.priority_reason + '</div>';
 }
 }).catch(() => {});
-fetch('/api/similar-complaints', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text})}).then(r=>r.json()).then(d=>{if(d.similar&&d.similar.length){similar.classList.remove('hidden');similar.className='mt-2 p-3 rounded-lg text-xs bg-purple-50 text-purple-700 border border-purple-100';let sh='<div class="font-semibold mb-1">Similar resolved complaints:</div>';d.similar.forEach(s=>{sh+='<div class="flex justify-between"><span>'+s.subject.substring(0,60)+'</span><span class="text-purple-400">sim: '+s.similarity+'</span></div>'});similar.innerHTML=sh}}).catch(()=>{});
+fetch('/api/similar-complaints', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text})}).then(r=>r.json()).then(d=>{if(d.similar&&d.similar.length){similar.classList.remove('hidden');similar.className='mt-2 p-3 rounded-lg text-xs bg-purple-50 text-purple-700 border border-purple-100';let sh='<div class="font-semibold mb-1">Similar resolved complaints:</div>';d.similar.forEach(s=>{sh+='<div class="flex justify-between"><span>'+escapeHtml(s.subject).substring(0,60)+'</span><span class="text-purple-400">sim: '+escapeHtml(s.similarity)+'</span></div>'});similar.innerHTML=sh}}).catch(()=>{});
 }, 500);
 }
 
