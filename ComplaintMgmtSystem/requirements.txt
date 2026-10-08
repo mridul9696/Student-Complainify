@@ -2,5 +2,6 @@ flask>=3.0
 pymysql>=1.1
 fpdf2==2.8.7
 python-dotenv>=1.0
+matplotlib>=3.5
 pytest>=8.0
 gunicorn>=21.2
