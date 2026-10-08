@@ -53,7 +53,7 @@ def save_version(model, metrics=None, keep=MAX_KEEP):
     path = _version_path(version_id)
     model.save(path)
 
-    import classifier
+    import ComplaintMgmtSystem.ml.classifier as classifier
     record = {
         'id': version_id,
         'saved_at': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -86,7 +86,7 @@ def load_version(version_id):
     path = _version_path(version_id)
     if not os.path.isfile(path):
         raise FileNotFoundError(f'Model version {version_id} not found at {path}')
-    from classifier import MultinomialNB
+    from ComplaintMgmtSystem.ml.classifier import MultinomialNB
     return MultinomialNB.load(path)
 
 
@@ -97,7 +97,7 @@ def load_latest():
     if active and os.path.isfile(_version_path(active)):
         return load_version(active)
     if os.path.isfile(ACTIVE_COPY_PATH):
-        from classifier import MultinomialNB
+        from ComplaintMgmtSystem.ml.classifier import MultinomialNB
         return MultinomialNB.load(ACTIVE_COPY_PATH)
     raise FileNotFoundError('No model registered yet. Run retrain.py first.')
 

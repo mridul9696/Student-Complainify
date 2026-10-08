@@ -9,7 +9,7 @@ import ssl
 import sys
 import uuid
 
-import pymysql
+import pymysql  # type: ignore[reportMissingModuleSource]
 from email.message import EmailMessage
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory, make_response
 from datetime import timedelta, datetime

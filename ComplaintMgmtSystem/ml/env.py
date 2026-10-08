@@ -7,7 +7,7 @@ the trained models are absent or unconfident.
 
 import os
 
-from classifier import MultinomialNB
+from ComplaintMgmtSystem.ml.classifier import MultinomialNB
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SENT_MODEL_PATH = os.path.join(BASE, 'data', 'sentiment_model.json')

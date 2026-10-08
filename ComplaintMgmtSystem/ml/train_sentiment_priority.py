@@ -18,7 +18,7 @@ import random
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from classifier import MultinomialNB, clean_and_tokenize
+from ComplaintMgmtSystem.ml.classifier import MultinomialNB, clean_and_tokenize
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATASET = os.path.join(BASE, 'data', 'sentiment_dataset.csv')

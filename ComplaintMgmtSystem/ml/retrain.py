@@ -1,9 +1,9 @@
 import sys, os, json, csv, math, random, re
 import datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from classifier import MultinomialNB
-import validate_data
-import model_registry
+from ComplaintMgmtSystem.ml.classifier import MultinomialNB
+import ComplaintMgmtSystem.ml.validate_data as validate_data
+import ComplaintMgmtSystem.ml.model_registry as model_registry
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TRAIN_PATH = os.path.join(BASE, 'data', 'train_dataset.csv')

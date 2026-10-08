@@ -1,4 +1,4 @@
-import env
+import ComplaintMgmtSystem.ml.env as env
 
 # ML priority is used when its confidence is at least this high.
 ML_CONFIDENCE = 0.55
