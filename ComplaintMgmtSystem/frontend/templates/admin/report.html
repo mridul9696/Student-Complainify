@@ -13,11 +13,9 @@
 <nav class="flex-1 px-2 space-y-0.5">
 <a href="{{ url_for('admin_dashboard') }}" class="flex items-center gap-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg px-4 py-3 text-sm transition-all"><span class="material-symbols-outlined text-sm">dashboard</span>Dashboard</a>
 <a href="{{ url_for('admin_complaints') }}" class="flex items-center gap-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg px-4 py-3 text-sm transition-all"><span class="material-symbols-outlined text-sm">assignment</span>All Complaints</a>
-<a href="{{ url_for('track_complaint') }}" class="flex items-center gap-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg px-4 py-3 text-sm transition-all"><span class="material-symbols-outlined text-sm">search</span>Track Status</a>
 <a href="{{ url_for('admin_audit_logs') }}" class="flex items-center gap-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg px-4 py-3 text-sm transition-all"><span class="material-symbols-outlined text-sm">history</span>Audit Logs</a>
 <a href="{{ url_for('admin_users') }}" class="flex items-center gap-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg px-4 py-3 text-sm transition-all"><span class="material-symbols-outlined text-sm">people</span>Users</a>
 <a href="{{ url_for('admin_training_logs') }}" class="flex items-center gap-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg px-4 py-3 text-sm transition-all"><span class="material-symbols-outlined text-sm">model_training</span>Training</a>
-<a href="{{ url_for('admin_analysis') }}" class="flex items-center gap-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg px-4 py-3 text-sm transition-all"><span class="material-symbols-outlined text-sm">grid_view</span>Sentiment x Priority</a>
                     <a href="{{ url_for('admin_report') }}" class="flex items-center gap-3 bg-[#d32f2f]/20 text-white rounded-lg px-4 py-3 text-sm font-medium border-l-2 border-[#d32f2f]"><span class="material-symbols-outlined text-sm">bar_chart</span>Reports</a>
 </nav>
 <div class="px-2 space-y-0.5 border-t border-white/10 pt-3 mt-2 mx-2">
@@ -90,6 +88,84 @@
 <div style="height:180px"><canvas id="reportAccChart"></canvas></div>
 </div>
 {% endif %}
+<div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+<div class="flex items-center justify-between mb-1">
+<h3 class="text-sm font-bold text-[#0a1628] flex items-center gap-2"><span class="material-symbols-outlined text-sm text-[#d32f2f]">grid_view</span>Sentiment × Priority</h3>
+<span class="text-xs text-gray-400">Who is being heard — and who is still upset</span>
+</div>
+{% if a.error %}
+<div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 my-4 text-sm">Could not reach the database ({{ a.error }}). Showing cached snapshot if available.</div>
+{% endif %}
+{% if a.matrix and a.green %}
+{% set prios = ['Low', 'Medium', 'High'] %}
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-4">
+<div>
+<p class="text-xs font-bold text-[#0a1628] mb-1">Problem heatmap (non-positive)</p>
+<p class="text-xs text-gray-400 mb-3">Category × priority — redder = louder issue profile.</p>
+<table class="w-full text-sm">
+<thead><tr class="text-left text-xs text-gray-400 uppercase"><th class="pb-2 font-semibold">Category</th>{% for p in prios %}<th class="pb-2 font-semibold text-center">{{ p }}</th>{% endfor %}</tr></thead>
+<tbody>
+{% for cat in a.matrix.keys() %}
+<tr class="border-t border-gray-100">
+<td class="py-2.5 font-medium text-[#0a1628]">{{ cat }}</td>
+{% for p in prios %}{% set n = a.matrix[cat][p] %}{% set alpha = 0.12 + n * 0.09 %}
+<td class="py-2.5 text-center font-semibold rounded-lg" style="background: rgba(211,47,47,{{ alpha if alpha < 0.85 else 0.85 }}); color:{{ '#fff' if alpha >= 0.5 else '#333' }}">{{ n }}</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1"><div class="text-sm font-bold text-[#0a1628]">Green zone (positive feedback)</div></div>
+<p class="text-xs text-gray-400 mb-3">Where satisfaction is being expressed — worth celebrating.</p>
+<table class="w-full text-sm">
+<thead><tr class="text-left text-xs text-gray-400 uppercase"><th class="py-2 font-semibold">Category</th>{% for p in prios %}<th class="py-2 font-semibold text-center">{{ p }}</th>{% endfor %}</tr></thead>
+<tbody>
+{% for cat in a.green.keys() %}
+<tr class="border-t border-gray-100">
+<td class="py-2.5 font-medium text-[#0a1628]">{{ cat }}</td>
+{% for p in prios %}{% set n = a.green[cat][p] %}{% set alpha = 0.10 + n * 0.14 %}
+<td class="py-2.5 text-center font-semibold" style="background:rgba(46,125,50,{{ alpha if alpha <= 0.85 else 0.85 }});color:{{ 'white' if alpha >= 0.5 else '#333' }}">{{ n }}</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+<div class="mt-6">
+<div class="flex items-center justify-between mb-2">
+<h4 class="text-sm font-bold text-[#0a1628]">Closed, but still hurting — {{ a.pink_total }} unresolved-resentment ticket{{ 's' if a.pink_total != 1 else '' }}</h4>
+<a href="{{ url_for('admin_complaints') }}" class="text-xs font-semibold text-[#d32f2f] hover:underline">View all complaints</a>
+</div>
+<p class="text-xs text-gray-400 mb-3">Resolved complaints that carried a negative tone at High/Medium priority. These may need a follow-up conversation.</p>
+{% if a.pink %}
+<div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr class="text-left text-xs text-gray-400 uppercase border-b border-gray-100"><th class="py-2 font-semibold">Ticket</th><th class="py-2 font-semibold">Category</th><th class="py-2 font-semibold text-center">Priority</th><th class="py-2 font-semibold">Subject</th><th class="py-2 font-semibold">Student</th><th class="py-2 font-semibold">Date</th></tr></thead>
+<tbody>
+{% for p in a.pink %}
+<tr class="border-b border-gray-50 hover:bg-pink-50/50 transition-colors">
+<td class="py-2.5"><a href="{{ url_for('admin_complaint_detail', ticket_id=p.ticket_id) }}" class="text-[#d32f2f] font-semibold hover:underline">{{ p.ticket_id }}</a></td>
+<td class="py-2.5">{{ p.category }}</td>
+<td class="py-2.5 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700">{{ p.priority }}</span></td>
+<td class="py-2.5 max-w-[260px] truncate" title="{{ p.subject }}">{{ p.subject }}</td>
+<td class="py-2.5">{{ p.student }}</td>
+<td class="py-2.5 text-gray-500">{{ p.date }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<p class="text-sm text-gray-500 py-4">Nothing here right now. All closed complaints ended on a good note.</p>
+{% endif %}
+</div>
+{% else %}
+<p class="text-sm text-gray-500 text-center py-8">No sentiment/priority data available yet. Submit some complaints to see the heatmaps.</p>
+{% endif %}
+</div>
 <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
 <div class="px-5 py-3 border-b border-gray-100 flex justify-between items-center">
 <h3 class="text-sm font-bold text-[#0a1628] flex items-center gap-2"><span class="material-symbols-outlined text-sm text-[#d32f2f]">table</span>All Complaints</h3>
@@ -108,7 +184,7 @@
 <td class="px-4 py-3 font-bold text-[#0a1628]">#{{ c.ticket_id }}</td>
 <td class="px-4 py-3 text-gray-600">{{ c.student }}</td>
 <td class="px-4 py-3 text-gray-600">{{ c.category }}</td>
-<td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold {% if c.priority == 'High' %}bg-red-100 text-red-700{% elif c.priority == 'Medium' %}bg-amber-100 text-amber-700{% else %}bg-gray-100 text-gray-500{% endif %}">{{ c.priority }}</span></td>
+<td class="px-4 py-3">{% if c.priority == 'High' %}<span class="pr-pill pr-pill--high"><span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>High</span>{% elif c.priority == 'Medium' %}<span class="pr-pill pr-pill--medium"><span class="material-symbols-outlined" aria-hidden="true">remove</span>Medium</span>{% else %}<span class="pr-pill pr-pill--low"><span class="material-symbols-outlined" aria-hidden="true">arrow_downward</span>{{ c.priority or 'Low' }}</span>{% endif %}</td>
 <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold {% if c.status == 'Resolved' %}bg-green-100 text-green-700{% elif c.status == 'In Progress' %}bg-blue-100 text-blue-700{% else %}bg-amber-100 text-amber-700{% endif %}">{{ c.status }}</span></td>
 <td class="px-4 py-3 text-gray-600">{{ c.assigned_to or '-' }}</td>
 <td class="px-4 py-3">{% if c.validated %}<span class="text-green-600 text-xs font-bold">Yes</span>{% else %}<span class="text-amber-600 text-xs">No</span>{% endif %}</td>

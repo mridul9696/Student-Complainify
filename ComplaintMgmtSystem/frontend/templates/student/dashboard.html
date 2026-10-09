@@ -6,14 +6,14 @@
   --secondary: #0058be;
   --surface-white: #ffffff;
   --on-surface: #1e293b;
-  --on-surface-variant: #64748b;
+  --on-surface-variant: #475569;
   --outline-variant: #e2e8f0;
   --surface-container: #f1f5f9;
   --warning-amber: #d97706;
   --on-primary: #ffffff;
   --on-primary-container: #cbd5e1;
   --primary-fixed-dim: #94a3b8;
-  --on-tertiary-container: #059669;
+  --on-tertiary-container: #047857;
   --slate-bg: #f8fafc;
   --secondary-container: #1d4ed8;
   --on-secondary-container: #ffffff;
@@ -33,7 +33,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .logo-icon span { color:white; font-size:20px; }
 .logo-text { font-size:1.25rem; font-weight:700; letter-spacing:-0.025em; }
 .sidebar-user { padding:0 1rem; margin:0 0.5rem 1.5rem 0.5rem; display:flex; align-items:center; gap:0.75rem; border-bottom:1px solid var(--on-primary-fixed-variant); padding-bottom:1rem; }
-.avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--secondary),#a78bfa); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:0.875rem; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+.avatar { width:40px; height:40px; border-radius:50%; background:var(--secondary); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:0.875rem; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
 .user-name { font-size:0.875rem; color:white; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .user-role { font-size:0.625rem; color:var(--blue-300); display:flex; align-items:center; gap:0.25rem; }
 .user-dot { width:6px; height:6px; border-radius:50%; background:#4ade80; display:inline-block; }
@@ -84,15 +84,15 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .stat-icon { font-size:0.875rem; }
 .stat-icon.primary { color:var(--primary); }
 .stat-icon.secondary { color:var(--secondary); }
-.stat-icon.amber { color:var(--warning-amber); }
+.stat-icon.amber { color:#b45309; }
 .stat-icon.green { color:var(--on-tertiary-container); }
 .stat-number { font-size:1.875rem; font-weight:700; color:var(--primary); }
 .stat-footer { font-size:0.6875rem; display:flex; align-items:center; gap:0.25rem; margin-top:auto; }
 .stat-footer.gray { color:var(--on-tertiary-container); }
-.stat-footer.amber { color:var(--warning-amber); }
+.stat-footer.amber { color:#b45309; }
 .stat-footer.blue { color:var(--secondary); }
 .stat-footer span { font-size:0.75rem; }
-.main-grid { display:grid; grid-template-columns:2fr 1fr; gap:1.5rem; }
+.main-grid { display:grid; grid-template-columns:1fr; gap:1.5rem; }
 .chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.5rem; }
 .chart-card { background:var(--surface-white); border-radius:16px; border:1px solid var(--outline-variant); box-shadow:0 1px 4px rgba(0,0,0,0.04); padding:1.25rem; display:flex; flex-direction:column; }
 .chart-title { font-size:0.75rem; font-weight:700; color:var(--primary); margin-bottom:0.75rem; display:flex; align-items:center; gap:0.25rem; }
@@ -253,16 +253,6 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 <div class="main-grid">
 
 <div class="left-column">
-  <div class="chart-grid">
-    <div class="chart-card">
-      <h4 class="chart-title"><span class="material-symbols-outlined">pie_chart</span>By Category</h4>
-      <canvas id="studentCatChart" height="100" style="max-height:130px" class="mt-auto"></canvas>
-    </div>
-    <div class="chart-card">
-      <h4 class="chart-title"><span class="material-symbols-outlined">trending_up</span>Monthly Trend</h4>
-      <canvas id="studentTrendChart" height="100" style="max-height:130px"></canvas>
-    </div>
-  </div>
 
   <section id="complaints">
     <div class="complaints-card">
@@ -294,9 +284,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
                 </span>
               </td>
               <td>
-                <span class="badge {% if c.priority == 'High' %}badge-red{% elif c.priority == 'Medium' %}badge-amber{% else %}badge-gray{% endif %}">
-                  {{ c.priority }}
-                </span>
+                {% if c.priority == 'High' %}<span class="pr-pill pr-pill--high"><span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>High</span>{% elif c.priority == 'Medium' %}<span class="pr-pill pr-pill--medium"><span class="material-symbols-outlined" aria-hidden="true">remove</span>Medium</span>{% else %}<span class="pr-pill pr-pill--low"><span class="material-symbols-outlined" aria-hidden="true">arrow_downward</span>{{ c.priority or 'Low' }}</span>{% endif %}
               </td>
               <td class="ticket-date">{{ c.date }}</td>
               <td><a href="{{ url_for('student_complaint_detail', ticket_id=c.ticket_id) }}" class="ticket-action">View{% if c.status == 'Resolved' %} →{% endif %}</a></td>
@@ -317,33 +305,6 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
   </section>
 </div>
 
-<div class="right-sidebar">
-  <div class="ai-card">
-    <div class="ai-circle"></div>
-    <div class="ai-content">
-      <div class="ai-header">
-        <div class="ai-icon-wrap"><span class="material-symbols-outlined">auto_awesome</span></div>
-        <span>AI Insight</span>
-      </div>
-      <p class="ai-text">
-        Your <span class="highlight">complaints</span> are typically resolved within
-        <span class="highlight">48 hours</span> — faster than the campus average.
-      </p>
-      <div class="ai-progress-wrap">
-        <div class="ai-bar"><div class="ai-bar-fill"></div></div>
-        <p class="ai-bar-label">Resolution probability: 92%</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="quick-links">
-    <h4><span class="material-symbols-outlined">link</span>Quick Links</h4>
-    <ul>
-      <li><a href="#">Student Handbook<span class="material-symbols-outlined">arrow_forward</span></a></li>
-      <li><a href="#">Grievance Policy<span class="material-symbols-outlined">arrow_forward</span></a></li>
-      <li><a href="#">Contact Support<span class="material-symbols-outlined">arrow_forward</span></a></li>
-    </ul>
-  </div>
 </div>
 
 </div>{# /main-grid #}
@@ -360,7 +321,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 </main>
 
 <nav class="mobile-nav">
-  <a href="#" style="color:var(--on-secondary-container)">
+  <a href="{{ url_for('student_dashboard') }}" style="color:var(--on-secondary-container)">
     <span class="material-symbols-outlined">dashboard</span>Home
   </a>
   <a href="{{ url_for('student_dashboard') }}#complaints" style="color:var(--on-primary-container)">
@@ -405,36 +366,6 @@ function checkNotif() {
 }
 setInterval(checkNotif, 10000);
 checkNotif();
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
-<script>
-{% if student_cat_labels %}
-new Chart(document.getElementById('studentCatChart'), {
-  type:'doughnut',
-  data:{
-    labels:{{ student_cat_labels|tojson }},
-    datasets:[{
-      data:{{ student_cat_values|tojson }},
-      backgroundColor:['#022448','#0058be','#2170e4','#10b981','#F59E0B','#EF4444','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16']
-    }]
-  },
-  options:{ plugins:{ legend:{ display:false } }, responsive:true }
-});
-{% endif %}
-{% if trend_labels %}
-new Chart(document.getElementById('studentTrendChart'), {
-  type:'line',
-  data:{
-    labels:{{ trend_labels|tojson }},
-    datasets:[{
-      label:'Complaints', data:{{ trend_values|tojson }},
-      borderColor:'#0058be', backgroundColor:'rgba(0,88,190,0.1)', fill:true, tension:0.3
-    }]
-  },
-  options:{ plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, ticks:{ stepSize:1 } } }, responsive:true }
-});
-{% endif %}
 </script>
 
 {% endblock %}

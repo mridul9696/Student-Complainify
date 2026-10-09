@@ -1198,26 +1198,7 @@ def admin_settings():
 def admin_analysis():
     if not login_required('admin'):
         return redirect(url_for('admin_login'))
-    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ml'))
-    import gen_analysis
-    try:
-        rows = gen_analysis.fetch_rows()
-        analysis = gen_analysis.build_analysis(rows)
-        analysis['rows'] = len(rows)
-    except Exception as e:
-        print(f"[ANALYSIS ERROR] {e}")
-        cached = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'live_analysis.json')
-        analysis = {}
-        if os.path.isfile(cached):
-            try:
-                with open(cached) as f:
-                    analysis = json.load(f)
-            except Exception as e2:
-                print(f"[ANALYSIS CACHE ERROR] {e2}")
-        analysis['rows'] = None
-        analysis['error'] = str(e)
-    return render_template('admin/analysis.html', a=analysis,
-        admin_name=session.get('fullname', 'Admin'))
+    return redirect(url_for('admin_report'))
 
 @app.route('/admin/report')
 def admin_report():
@@ -1309,10 +1290,30 @@ def admin_report():
         except Exception as e:
             print(f"[REPORT TRAIN LOG] {e}")
 
+    # Sentiment x Priority analysis (merged from the old analysis page)
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ml'))
+    import gen_analysis
+    try:
+        analysis_rows = gen_analysis.fetch_rows()
+        analysis = gen_analysis.build_analysis(analysis_rows)
+        analysis['rows'] = len(analysis_rows)
+    except Exception as e:
+        print(f"[REPORT ANALYSIS ERROR] {e}")
+        cached = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'live_analysis.json')
+        analysis = {}
+        if os.path.isfile(cached):
+            try:
+                with open(cached) as f:
+                    analysis = json.load(f)
+            except Exception as e2:
+                print(f"[REPORT ANALYSIS CACHE ERROR] {e2}")
+        analysis['rows'] = None
+        analysis['error'] = str(e)
+
     return render_template('admin/report.html', complaints=complaints,
         total=total, resolved=resolved, in_progress=in_progress, pending=pending, validated=validated,
         cat_labels=cat_labels, cat_values=cat_values,
-        train_log=train_log,
+        train_log=train_log, a=analysis,
         daily_labels=daily_labels, daily_data=daily_data,
         month_labels=month_labels, month_data=month_data,
         avg_res=avg_res, max_res=max_res, min_res=min_res,
