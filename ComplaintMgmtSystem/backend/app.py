@@ -19,6 +19,9 @@ from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 
+# Ensure `import ComplaintMgmtSystem.ml.*` works without external PYTHONPATH.
+# ml/sentiment.py etc use absolute package imports, so parent must be on path.
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ml'))
 from classifier import categorize, predict_top3, detect_anomaly, clean_and_tokenize  # noqa: E402
 import model_registry  # noqa: E402
