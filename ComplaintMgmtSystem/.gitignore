@@ -1,0 +1,28 @@
+# Secrets - never commit real passwords/keys
+.env
+department_emails.json
+
+# Uploads - user files, not code
+uploads/
+
+# Python
+# cache files, virtual environments, test cache, etc. sabaaaiii hiddennn
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# ML artifacts (large / generated)
+# hide what we trained and generated, not the code itself
+ml/models/
+ml/reports/
+data/live_analysis.json
+
+# OS / editor
+# specific config files haru lai ni hide
+.DS_Store
+Thumbs.db
+.vscode/
