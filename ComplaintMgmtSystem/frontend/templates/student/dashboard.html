@@ -206,7 +206,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
       </button>
       <div id="notifDropdown" class="notif-dropdown">
         <div class="notif-header"><span>Notifications</span><button onclick="markAllRead()">Mark all read</button></div>
-        <div id="notifList" class="notif-list"><p style="text-align:center;padding:1.5rem 0;font-size:0.875rem;color:var(--on-surface-variant)">Loading...</p></div>
+        <div id="notifList" class="notif-list"><div style="padding:0.75rem;display:grid;gap:0.6rem"><div class="skeleton" style="height:2.6rem;border-radius:10px"></div><div class="skeleton" style="height:2.6rem;border-radius:10px"></div><div class="skeleton" style="height:2.6rem;border-radius:10px"></div></div></div>
       </div>
     </div>
     <a href="{{ url_for('submit_complaint') }}" class="new-complaint-btn"><span class="material-symbols-outlined" style="font-size:0.875rem">add</span>New Complaint</a>

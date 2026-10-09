@@ -250,7 +250,7 @@ body h6 { font-size: .8125rem; }
 }
 
 .hero-sub { font-size: 1.125rem; color: var(--text-muted); line-height: 1.75; max-width: 34rem; }
-.lead { font-size: 1.0625rem; color: var(--text-muted); line-height: 1.75; }
+.lead { font-size: 1.0625rem; color: var(--text-muted); line-height: 1.75; max-width: 44rem; }
 .muted { color: var(--text-muted); }
 .faint { color: var(--text-faint); }
 .strong { color: var(--text-strong); font-weight: 600; }
