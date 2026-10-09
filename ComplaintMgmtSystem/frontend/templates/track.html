@@ -69,7 +69,7 @@
 </div>
 <div class="card card--flat card--pad">
 <p class="text-xs faint fw-700">PRIORITY</p>
-<p class="mt-1"><span class="badge {{ 'badge--red' if ('critical' in p or 'high' in p) else ('badge--amber' if 'medium' in p else 'badge--green') }}">{{ result.priority or 'Not set' }}</span></p>
+<p class="mt-1">{% if 'high' in p %}<span class="pr-pill pr-pill--high"><span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>{{ result.priority }}</span>{% elif 'medium' in p %}<span class="pr-pill pr-pill--medium"><span class="material-symbols-outlined" aria-hidden="true">remove</span>{{ result.priority }}</span>{% elif result.priority %}<span class="pr-pill pr-pill--low"><span class="material-symbols-outlined" aria-hidden="true">arrow_downward</span>{{ result.priority }}</span>{% else %}<span class="muted text-sm">Not set</span>{% endif %}</p>
 </div>
 <div class="card card--flat card--pad">
 <p class="text-xs faint fw-700">ASSIGNED TO</p>

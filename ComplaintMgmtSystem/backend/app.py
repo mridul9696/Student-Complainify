@@ -254,7 +254,34 @@ def is_valid_phone(phone):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    stats = None
+    queue = []
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        try:
+            cur.execute("SELECT COUNT(*) cnt FROM complaints")
+            total = (cur.fetchone() or {}).get('cnt', 0)
+            cur.execute("SELECT COUNT(*) cnt FROM complaints WHERE status='Resolved'")
+            resolved = (cur.fetchone() or {}).get('cnt', 0)
+            cur.execute("SELECT COALESCE(AVG(TIMESTAMPDIFF(HOUR, created_at, resolved_at)), 0) avg_hrs FROM complaints WHERE status='Resolved' AND resolved_at IS NOT NULL")
+            avg_row = cur.fetchone() or {}
+            avg_hrs = round(float(avg_row.get('avg_hrs') or 0), 1)
+            stats = {'total': total, 'resolved': resolved, 'avg_hrs': avg_hrs}
+            cur.execute("SELECT ticket_id, subject, category, priority, status, TIMESTAMPDIFF(HOUR, created_at, NOW()) age_hrs FROM complaints ORDER BY FIELD(priority, 'High', 'Medium', 'Low'), created_at DESC LIMIT 5")
+            queue = cur.fetchall() or []
+        finally:
+            try:
+                cur.close()
+            except Exception:
+                pass
+            try:
+                conn.close()
+            except Exception:
+                pass
+    except Exception as e:
+        print(f"[INDEX STATS] {e}")
+    return render_template('index.html', stats=stats, queue=queue)
 
 @app.route('/submit-complaint', methods=['GET', 'POST'])
 def submit_complaint():
@@ -888,11 +915,11 @@ def admin_complaints():
     total_row = cur.fetchone()
     total_count = total_row['cnt'] if total_row else 0
     total_pages = max(1, (total_count + per_page - 1) // per_page)
-    query = f"""SELECT ticket_id,fullname student,category,priority,status,subject,sentiment,college,
+    query = f"""SELECT ticket_id,fullname student,category,priority,priority_score,priority_reason,status,subject,sentiment,college,
         date_format(created_at,'%%d %%b %%Y') date,
         date_format(created_at,'%%Y-%%m-%%d') date_input,
         created_at, assigned_to, validated
-        {base_query} ORDER BY created_at DESC LIMIT %s OFFSET %s"""
+        {base_query} ORDER BY FIELD(status,'Pending','In Progress','Resolved'), FIELD(priority,'High','Medium','Low'), created_at DESC LIMIT %s OFFSET %s"""
     cur.execute(query, params + [per_page, offset])
     complaints = cur.fetchall()
     cur.close()
@@ -1068,11 +1095,11 @@ def admin_confirm_label(ticket_id):
     existing = cur.fetchone()
     if category and existing and category in [d for d in CATEGORIES if d != 'Other']:
         cur.execute("""UPDATE complaints
-            SET category=%s, category_confirmed=1, confirmed_by=%s, confirmed_at=NOW()
+            SET category=%s, category_confirmed=1, confirmed_by=%s, confirmed_at=NOW(), validated=1
             WHERE ticket_id=%s""", (category, session.get('fullname', 'Admin'), ticket_id))
     elif existing:
         cur.execute("""UPDATE complaints
-            SET category_confirmed=1, confirmed_by=%s, confirmed_at=NOW()
+            SET category_confirmed=1, confirmed_by=%s, confirmed_at=NOW(), validated=1
             WHERE ticket_id=%s""", (session.get('fullname', 'Admin'), ticket_id))
     conn.commit()
     cur.close()

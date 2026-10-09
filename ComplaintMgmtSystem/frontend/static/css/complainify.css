@@ -2006,35 +2006,35 @@ input.input[type="file"]::file-selector-button:hover { filter: brightness(1.06);
    13. SITUATION ROOM — Direction B landing world (fog ground, teal accent)
    Flat surfaces, depth from borders and offset shadows only. No gradients.
    ========================================================================== */
-.sit { background: #F4F6F8; }
-.sit-nav { background: #F4F6F8; border-bottom: 1px solid #E2E8F0; }
-.sit-hero { background: #F4F6F8; border-bottom: 1px solid #E2E8F0; padding: 4.5rem 0 3.5rem; }
+.sit { background: #FAF6EF; }
+.sit-nav { background: #FAF6EF; border-bottom: 1px solid #E4DCC8; }
+.sit-hero { background: #FAF6EF; border-bottom: 1px solid #E4DCC8; padding: 4.5rem 0 3.5rem; }
 .sit-hero__grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 3rem; align-items: start; }
 .sit-display {
-  font-family: "Archivo", "Inter", system-ui, sans-serif;
+  font-family: "Bitter", Georgia, serif;
   font-size: clamp(2.4rem, 4.6vw, 3.9rem);
   font-weight: 800;
   line-height: 1.05;
-  letter-spacing: -.03em;
-  color: #102A43;
+  letter-spacing: -.015em;
+  color: #0F2A43;
   text-wrap: balance;
   max-width: 12ch;
 }
 .sit-sub { font-size: 1.0625rem; line-height: 1.7; color: #51606F; max-width: 44rem; }
 .sit-hero__actions { display: flex; gap: .75rem; flex-wrap: wrap; }
-.sit-hero__actions .btn--primary { background: #0E6B5E; box-shadow: 0 10px 24px rgba(14, 107, 94, .28); }
-.sit-hero__actions .btn--primary:hover { box-shadow: 0 14px 30px rgba(14, 107, 94, .34); filter: brightness(1.05); transform: translateY(-1px); }
+.sit-hero__actions .btn--primary { background: #8C2F1B; box-shadow: 0 10px 24px rgba(140, 47, 27, .30); }
+.sit-hero__actions .btn--primary:hover { box-shadow: 0 14px 30px rgba(140, 47, 27, .36); filter: brightness(1.05); transform: translateY(-1px); }
 .sit-proof { font-size: .875rem; color: #51606F; }
-.sit-proof__num { font-weight: 800; color: #102A43; font-variant-numeric: tabular-nums; }
+.sit-proof__num { font-weight: 800; color: #0F2A43; font-variant-numeric: tabular-nums; }
 .sit-proof__sep { margin: 0 .5rem; color: #94A3B8; }
-.sit-proof .link { color: #0E6B5E; font-weight: 600; }
+.sit-proof .link { color: #8C2F1B; font-weight: 600; }
 
 /* Ranked queue preview */
 .sit-queue {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 16px;
-  box-shadow: 0 18px 44px rgba(16, 42, 67, .12);
+  background: #FFFDF8;
+  border: 1px solid #E4DCC8;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(15, 42, 67, .06), 0 18px 44px rgba(15, 42, 67, .12);
   overflow: hidden;
 }
 .sit-queue__head {
@@ -2043,7 +2043,7 @@ input.input[type="file"]::file-selector-button:hover { filter: brightness(1.06);
   border-bottom: 1px solid #E2E8F0;
   background: #102A43; color: #EAF1FB;
 }
-.sit-queue__title { font-family: "Archivo", "Inter", sans-serif; font-weight: 800; letter-spacing: -.01em; }
+.sit-queue__title { font-family: "Bitter", Georgia, serif; font-weight: 800; letter-spacing: -.01em; }
 .sit-queue__live { display: inline-flex; align-items: center; gap: .45rem; font-size: .75rem; color: #B9C7D8; }
 .sit-dot { width: 8px; height: 8px; border-radius: 50%; background: #34D399; box-shadow: 0 0 0 4px rgba(52, 211, 153, .22); }
 .sit-queue__list { list-style: none; }
@@ -2053,8 +2053,8 @@ input.input[type="file"]::file-selector-button:hover { filter: brightness(1.06);
   border-bottom: 1px solid #EDF1F5;
 }
 .sit-case:last-child { border-bottom: none; }
-.sit-rank { font-family: "Archivo", "Inter", sans-serif; font-weight: 800; font-size: 1.5rem; color: #CBD5E1; line-height: 1; min-width: 2.2rem; }
-.sit-case:first-child .sit-rank { color: #0E6B5E; }
+.sit-rank { font-family: "Bitter", Georgia, serif; font-weight: 800; font-size: 1.5rem; color: #CBD5E1; line-height: 1; min-width: 2.2rem; }
+.sit-case:first-child .sit-rank { color: #8C2F1B; }
 .sit-case__body { flex: 1; min-width: 0; }
 .sit-case__top { display: flex; justify-content: space-between; align-items: baseline; gap: .75rem; }
 .sit-ticket { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: .75rem; color: #51606F; }
@@ -2081,16 +2081,16 @@ input.input[type="file"]::file-selector-button:hover { filter: brightness(1.06);
 /* Ranked table */
 .sit-tablewrap { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; overflow: hidden; box-shadow: 0 14px 34px rgba(16, 42, 67, .10); }
 .sit-table { width: 100%; border-collapse: collapse; }
-.sit-table__cap { text-align: left; padding: 1rem 1.25rem; font-weight: 800; color: #102A43; font-family: "Archivo", "Inter", sans-serif; }
+.sit-table__cap { text-align: left; padding: 1rem 1.25rem; font-weight: 800; color: #102A43; font-family: "Bitter", Georgia, serif; }
 .sit-table th { font-size: .6875rem; text-transform: uppercase; letter-spacing: .06em; color: #51606F; text-align: left; padding: .75rem 1.25rem; background: #F8FAFC; border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; }
 .sit-table td { padding: .95rem 1.25rem; font-size: .875rem; border-bottom: 1px solid #EDF1F5; }
 .sit-table tr:last-child td { border-bottom: none; }
 .sit-table tbody tr:hover { background: #F8FAFC; }
-.sit-table__rank { font-family: "Archivo", "Inter", sans-serif; font-weight: 800; color: #0E6B5E; }
+.sit-table__rank { font-family: "Bitter", Georgia, serif; font-weight: 800; color: #8C2F1B; }
 .sit-table__num { font-variant-numeric: tabular-nums; font-weight: 700; color: #102A43; white-space: nowrap; }
 
 /* Steps — connected rail, not cards */
-.sit-steps-head h2 { font-family: "Archivo", "Inter", sans-serif; font-weight: 800; letter-spacing: -.02em; color: #102A43; font-size: clamp(1.6rem, 3vw, 2.4rem); }
+.sit-steps-head h2 { font-family: "Bitter", Georgia, serif; font-weight: 800; letter-spacing: -.02em; color: #102A43; font-size: clamp(1.6rem, 3vw, 2.4rem); }
 .sit-steps { list-style: none; margin-top: 2rem; display: grid; gap: 0; }
 .sit-step {
   display: grid; grid-template-columns: 3.2rem 1fr; gap: 1.25rem;
@@ -2100,10 +2100,10 @@ input.input[type="file"]::file-selector-button:hover { filter: brightness(1.06);
 .sit-step__n {
   width: 3.2rem; height: 3.2rem; border-radius: 50%;
   background: #102A43; color: #fff;
-  font-family: "Archivo", "Inter", sans-serif; font-weight: 800; font-size: 1.25rem;
+  font-family: "Bitter", Georgia, serif; font-weight: 800; font-size: 1.25rem;
   display: flex; align-items: center; justify-content: center;
 }
-.sit-step h3 { font-family: "Archivo", "Inter", sans-serif; color: #102A43; font-size: 1.125rem; }
+.sit-step h3 { font-family: "Bitter", Georgia, serif; color: #102A43; font-size: 1.125rem; }
 .sit-step p { color: #51606F; margin-top: .3rem; max-width: 44rem; }
 
 /* Proof band + close */
@@ -2112,12 +2112,17 @@ input.input[type="file"]::file-selector-button:hover { filter: brightness(1.06);
   background: #102A43; color: #EAF1FB; border-radius: 16px; padding: 2.25rem 2.5rem;
   box-shadow: 0 18px 44px rgba(16, 42, 67, .22);
 }
-.sit-proofband__num { font-family: "Archivo", "Inter", sans-serif; font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.6rem); font-variant-numeric: tabular-nums; }
+.sit-proofband__num { font-family: "Bitter", Georgia, serif; font-weight: 800; font-size: clamp(1.8rem, 3.4vw, 2.6rem); font-variant-numeric: tabular-nums; }
 .sit-proofband__label { font-size: .8125rem; color: #9FB2C8; margin-top: .3rem; }
 .sit-close { text-align: left; }
-.sit-close h2 { font-family: "Archivo", "Inter", sans-serif; font-weight: 800; letter-spacing: -.02em; color: #102A43; font-size: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: 1.25rem; max-width: 16ch; }
+.sit-close h2 { font-family: "Bitter", Georgia, serif; font-weight: 800; letter-spacing: -.02em; color: #102A43; font-size: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: 1.25rem; max-width: 16ch; }
 
 @media (max-width: 900px) {
   .sit-hero__grid { grid-template-columns: 1fr; }
   .sit-proofband { grid-template-columns: 1fr; }
 }
+
+/* Routing disclosure on the submit form — ledger style */
+.reg-disclosure { border: 1px solid #E4DCC8; border-radius: 12px; padding: .9rem 1.1rem; background: #FFFDF8; }
+.reg-disclosure summary { cursor: pointer; font-weight: 700; font-size: .875rem; color: #0F2A43; }
+.reg-disclosure summary::marker { color: #8C2F1B; }

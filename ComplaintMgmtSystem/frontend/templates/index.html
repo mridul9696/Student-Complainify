@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Complainify | The ranked queue for every student complaint{% endblock %}
 {% block head %}
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700;800&display=swap" rel="stylesheet">
 {% endblock %}
 {% block content %}
 <header class="nav sit-nav">
@@ -40,11 +40,11 @@ File once. The triage engine reads each case, scores its urgency, and lines the 
 </button>
 </div>
 <p class="sit-proof mt-6">
-<span class="sit-proof__num">3,412</span> cases routed last term
+{% if stats %}<span class="sit-proof__num">{{ stats.total }}</span> cases on record
 <span class="sit-proof__sep" aria-hidden="true">·</span>
-<span class="sit-proof__num">91%</span> resolved within SLA
+<span class="sit-proof__num">{{ stats.resolved }}</span> resolved
 <span class="sit-proof__sep" aria-hidden="true">·</span>
-<a class="link" href="{{ url_for('track_complaint') }}">Track an existing case</a>
+{% endif %}<a class="link" href="{{ url_for('track_complaint') }}">Track an existing case</a>
 </p>
 </div>
 
@@ -52,36 +52,25 @@ File once. The triage engine reads each case, scores its urgency, and lines the 
 <div class="sit-queue">
 <div class="sit-queue__head">
 <span class="sit-queue__title">Live queue</span>
-<span class="sit-queue__live"><span class="sit-dot" aria-hidden="true"></span>Hostels · updated 2 min ago</span>
+<span class="sit-queue__live"><span class="sit-dot" aria-hidden="true"></span>Ranked by urgency · live</span>
 </div>
 <ol class="sit-queue__list">
+{% for row in queue %}
 <li class="sit-case">
-<span class="sit-rank" aria-hidden="true">01</span>
+<span class="sit-rank" aria-hidden="true">{{ '%02d' % loop.index }}</span>
 <div class="sit-case__body">
-<div class="sit-case__top"><span class="sit-ticket">CMP-8F2KQ1D4</span><span class="sit-age">18 min</span></div>
-<p class="sit-case__subject">No hot water in Block C, third morning running</p>
-<p class="sit-case__why">High urgency × frustrated tone × 47 similar cases</p>
+<div class="sit-case__top"><span class="sit-ticket">{{ row.ticket_id }}</span><span class="sit-age">{{ row.age_hrs }} h</span></div>
+<p class="sit-case__subject">{{ row.subject }}</p>
+<p class="sit-case__why">{{ row.category }}{% if row.status == 'Resolved' %} · resolved{% endif %}</p>
 </div>
-<span class="pr-pill pr-pill--critical"><span class="material-symbols-outlined" aria-hidden="true">priority_high</span>Critical</span>
+{% if row.priority == 'High' and row.status != 'Resolved' %}<span class="pr-pill pr-pill--critical"><span class="material-symbols-outlined" aria-hidden="true">priority_high</span>Critical</span>
+{% elif row.priority == 'High' %}<span class="pr-pill pr-pill--high"><span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>High</span>
+{% elif row.priority == 'Medium' %}<span class="pr-pill pr-pill--medium"><span class="material-symbols-outlined" aria-hidden="true">remove</span>Medium</span>
+{% else %}<span class="pr-pill pr-pill--low"><span class="material-symbols-outlined" aria-hidden="true">arrow_downward</span>Low</span>{% endif %}
 </li>
-<li class="sit-case">
-<span class="sit-rank" aria-hidden="true">02</span>
-<div class="sit-case__body">
-<div class="sit-case__top"><span class="sit-ticket">CMP-51BD77A0</span><span class="sit-age">2 h</span></div>
-<p class="sit-case__subject">Transcript missing 2 credits from last semester</p>
-<p class="sit-case__why">Medium urgency × 12 similar cases · Academics</p>
-</div>
-<span class="pr-pill pr-pill--high"><span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>High</span>
-</li>
-<li class="sit-case">
-<span class="sit-rank" aria-hidden="true">03</span>
-<div class="sit-case__body">
-<div class="sit-case__top"><span class="sit-ticket">CMP-C9D2E4B7</span><span class="sit-age">6 h</span></div>
-<p class="sit-case__subject">Library Wi-Fi drops in the reading hall</p>
-<p class="sit-case__why">Steady tone × first report · IT Support</p>
-</div>
-<span class="pr-pill pr-pill--medium"><span class="material-symbols-outlined" aria-hidden="true">remove</span>Medium</span>
-</li>
+{% else %}
+<li class="sit-case"><div class="sit-case__body"><p class="sit-case__subject">No complaints on record yet</p><p class="sit-case__why">File the first case and it will appear here, ranked.</p></div></li>
+{% endfor %}
 </ol>
 <div class="sit-queue__foot">Ranked by urgency, tone, and recurrence — recomputed on every filing.</div>
 </div>
@@ -97,10 +86,11 @@ File once. The triage engine reads each case, scores its urgency, and lines the 
 <caption class="sit-table__cap">The queue, top to bottom. Worst first.</caption>
 <thead><tr><th scope="col">Rank</th><th scope="col">Case</th><th scope="col">Priority</th><th scope="col">Age</th></tr></thead>
 <tbody>
-<tr><td class="sit-table__rank">01</td><td><span class="mono">CMP-8F2KQ1D4</span> — No hot water, Block C</td><td><span class="pr-pill pr-pill--critical"><span class="material-symbols-outlined" aria-hidden="true">priority_high</span>Critical</span></td><td class="sit-table__num">18 min</td></tr>
-<tr><td class="sit-table__rank">02</td><td><span class="mono">CMP-51BD77A0</span> — Missing transcript credits</td><td><span class="pr-pill pr-pill--high"><span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>High</span></td><td class="sit-table__num">2 h</td></tr>
-<tr><td class="sit-table__rank">03</td><td><span class="mono">CMP-C9D2E4B7</span> — Reading-hall Wi-Fi drops</td><td><span class="pr-pill pr-pill--medium"><span class="material-symbols-outlined" aria-hidden="true">remove</span>Medium</span></td><td class="sit-table__num">6 h</td></tr>
-<tr><td class="sit-table__rank">04</td><td><span class="mono">CMP-2A77F0E9</span> — Canteen billing error, ₹120</td><td><span class="pr-pill pr-pill--low"><span class="material-symbols-outlined" aria-hidden="true">arrow_downward</span>Low</span></td><td class="sit-table__num">1 d</td></tr>
+{% for row in queue %}
+<tr><td class="sit-table__rank">{{ '%02d' % loop.index }}</td><td><span class="mono">{{ row.ticket_id }}</span> — {{ row.subject[:48] }}</td><td>{% if row.priority == 'High' and row.status != 'Resolved' %}<span class="pr-pill pr-pill--critical"><span class="material-symbols-outlined" aria-hidden="true">priority_high</span>Critical</span>{% elif row.priority == 'High' %}<span class="pr-pill pr-pill--high"><span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>High</span>{% elif row.priority == 'Medium' %}<span class="pr-pill pr-pill--medium"><span class="material-symbols-outlined" aria-hidden="true">remove</span>Medium</span>{% else %}<span class="pr-pill pr-pill--low"><span class="material-symbols-outlined" aria-hidden="true">arrow_downward</span>Low</span>{% endif %}</td><td class="sit-table__num">{{ row.age_hrs }} h</td></tr>
+{% else %}
+<tr><td class="sit-table__rank">—</td><td>No complaints on record yet.</td><td></td><td></td></tr>
+{% endfor %}
 </tbody>
 </table>
 </div>
@@ -126,9 +116,13 @@ File once. The triage engine reads each case, scores its urgency, and lines the 
 <section class="section section--tight" id="proof">
 <div class="container">
 <div class="reveal sit-proofband">
-<div><p class="sit-proofband__num">4.2 h</p><p class="sit-proofband__label">Median time to resolution, last term</p></div>
-<div><p class="sit-proofband__num">47.2%</p><p class="sit-proofband__label">Of cases recur in clusters the system now catches early</p></div>
-<div><p class="sit-proofband__num">12</p><p class="sit-proofband__label">Departments served from one queue</p></div>
+{% if stats %}
+<div><p class="sit-proofband__num">{{ stats.total }}</p><p class="sit-proofband__label">Complaints on record</p></div>
+<div><p class="sit-proofband__num">{{ stats.resolved }}</p><p class="sit-proofband__label">Resolved and closed</p></div>
+<div><p class="sit-proofband__num">{{ stats.avg_hrs }} h</p><p class="sit-proofband__label">Mean time to resolution</p></div>
+{% else %}
+<div><p class="sit-proofband__num">—</p><p class="sit-proofband__label">Live figures unavailable right now</p></div>
+{% endif %}
 </div>
 </div>
 </section>

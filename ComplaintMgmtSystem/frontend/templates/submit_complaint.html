@@ -11,7 +11,6 @@
 <span class="brand__mark"><span class="material-symbols-outlined">gavel</span></span>
 <span>Complainify</span>
 </a>
-<span class="eyebrow eyebrow--ai"><span class="material-symbols-outlined icon-sm">rate_review</span>Complaint Portal</span>
 </div>
 <section class="auth__card anim-fade-up anim-delay-1">
 <div class="auth__head">
@@ -42,6 +41,30 @@
 </div>
 {% endif %}
 <div class="field">
+<label class="field__label" for="subject">Subject</label>
+<div class="input-icon">
+<span class="material-symbols-outlined">subject</span>
+<input class="input" id="subject" name="subject" placeholder="Brief title of your complaint" type="text">
+</div>
+</div>
+<div class="field">
+<div class="field__row">
+<label class="field__label" for="description">Description</label>
+<div class="row">
+<span id="micStatus" class="text-xs muted"></span>
+<button type="button" id="micBtn" onclick="toggleMic()" class="btn btn--primary btn--sm" title="Dictate your complaint"><span class="material-symbols-outlined icon-sm">mic</span> Dictate</button>
+</div>
+</div>
+<textarea class="textarea" id="description" name="description" placeholder="Provide detailed information about your complaint..." oninput="previewCategory(this.value)"></textarea>
+<p id="micInterim" class="hidden text-xs muted mt-1"></p>
+<div id="aiPreview" class="hidden mt-2"></div>
+<div id="aiMeta" class="hidden mt-2"></div>
+<div id="similarComplaints" class="hidden mt-2"></div>
+</div>
+<details class="reg-disclosure">
+<summary>Routing details <span class="muted">— college and category, or let the AI decide</span></summary>
+<div class="stack stack--sm mt-3">
+<div class="field">
 <label class="field__label" for="college">College / Faculty</label>
 <select class="select" id="college" name="college">
 <option value="">Select your college</option>
@@ -69,27 +92,8 @@
 </select>
 <p class="field__hint">Choose "Auto-detect" to let our AI classify your complaint.</p>
 </div>
-<div class="field">
-<label class="field__label" for="subject">Subject</label>
-<div class="input-icon">
-<span class="material-symbols-outlined">subject</span>
-<input class="input" id="subject" name="subject" placeholder="Brief title of your complaint" type="text">
 </div>
-</div>
-<div class="field">
-<div class="field__row">
-<label class="field__label" for="description">Description</label>
-<div class="row">
-<span id="micStatus" class="text-xs muted"></span>
-<button type="button" id="micBtn" onclick="toggleMic()" class="btn btn--primary btn--sm" title="Dictate your complaint"><span class="material-symbols-outlined icon-sm">mic</span> Dictate</button>
-</div>
-</div>
-<textarea class="textarea" id="description" name="description" placeholder="Provide detailed information about your complaint..." oninput="previewCategory(this.value)"></textarea>
-<p id="micInterim" class="hidden text-xs muted mt-1"></p>
-<div id="aiPreview" class="hidden mt-2"></div>
-<div id="aiMeta" class="hidden mt-2"></div>
-<div id="similarComplaints" class="hidden mt-2"></div>
-</div>
+</details>
 <div class="field">
 <label class="field__label" for="student_attachment">Attach File (optional)</label>
 <div class="row">
@@ -147,17 +151,18 @@ body: JSON.stringify({text: text})
 }).then(r => r.json()).then(data => {
 if (data.predictions) {
 preview.classList.remove('hidden');
-preview.className = 'mt-2 p-3 rounded-lg text-xs bg-blue-50 text-blue-700 border border-blue-100';
+preview.className = 'mt-2 p-3 rounded-lg text-xs border';
+preview.style.cssText = 'background:#FFFDF8;border-color:#E4DCC8;color:#0F2A43';
 let html = '<div class="font-semibold mb-2">AI Predictions:</div>';
 const colors = ['bg-blue-600', 'bg-blue-400', 'bg-blue-200'];
 data.predictions.forEach((p, i) => {
 const pct = (p.confidence * 100).toFixed(1);
-html += '<div class="flex items-center gap-2 mb-1"><span class="w-20 text-right text-blue-800 font-medium">' + p.category + '</span><div class="flex-1 bg-gray-200 h-4 rounded-full overflow-hidden"><div class="' + colors[i] + ' h-full rounded-full" style="width:' + pct + '%"></div></div><span class="w-12 text-blue-800">' + pct + '%</span></div>';
+html += '<div class="flex items-center gap-2 mb-1"><span class="w-20 text-right font-medium">' + escapeHtml(p.category) + '</span><div class="flex-1 bg-gray-200 h-4 rounded-full overflow-hidden"><div class="' + colors[i] + ' h-full rounded-full" style="width:' + pct + '%"></div></div><span class="w-12">' + pct + '%</span></div>';
 });
 fetch('/api/predict-resolution?text=' + encodeURIComponent(text)).then(r => r.json()).then(res => {
-html += '<div class="mt-2 pt-2 border-t border-blue-200 text-blue-800">Estimated resolution: <strong>' + res.hours + ' hours</strong></div>';
+html += '<div class="mt-2 pt-2" style="border-top:1px solid #E4DCC8">Estimated resolution: <strong>' + escapeHtml(res.hours) + ' hours</strong></div>';
 }).catch(() => {});
-fetch('/api/detect-anomaly', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text})}).then(r=>r.json()).then(a=>{if(a.is_anomaly){html+='<div class="mt-2 pt-2 border-t border-blue-200"><span class="text-orange-600 font-medium">⚠ Anomalous complaint</span><span class="text-blue-600 ml-2">Flags: '+a.flags.join(', ')+'</span></div>'}}).catch(()=>{});
+fetch('/api/detect-anomaly', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text})}).then(r=>r.json()).then(a=>{if(a.is_anomaly){html+='<div class="mt-2 pt-2" style="border-top:1px solid #E4DCC8"><span style="color:#8C2F1B" class="font-medium">Unusual complaint — flagged for manual review</span><span class="ml-2">Flags: '+escapeHtml(a.flags.join(', '))+'</span></div>'}}).catch(()=>{});
 preview.innerHTML = html;
 }
 }).catch(() => {});
@@ -168,15 +173,16 @@ body: JSON.stringify({text: text})
 }).then(r => r.json()).then(a => {
 if (a.sentiment) {
 meta.classList.remove('hidden');
-meta.className = 'mt-2 p-3 rounded-lg text-xs bg-green-50 text-green-800 border border-green-100';
+meta.className = 'mt-2 p-3 rounded-lg text-xs border';
+meta.style.cssText = 'background:#FFFDF8;border-color:#E4DCC8;color:#0F2A43';
 const sentimentColors = {Negative: 'bg-red-500', Neutral: 'bg-gray-400', Positive: 'bg-green-500'};
 const priorityColors = {High: 'bg-red-500', Medium: 'bg-yellow-400', Low: 'bg-green-500'};
 const priorityWidth = {High: 100, Medium: 66, Low: 0};
 const sentWidth = Math.round(((a.sentiment_score + 1) / 2) * 100);
 meta.innerHTML = '<div class="font-semibold mb-2">AI Analysis:</div>' +
-'<div class="flex items-center gap-2 mb-1"><span class="w-20 text-right text-green-800 font-medium">Sentiment</span><div class="flex-1 bg-gray-200 h-4 rounded-full overflow-hidden"><div class="' + sentimentColors[a.sentiment] + ' h-full rounded-full" style="width:' + sentWidth + '%"></div></div><span class="w-24 text-green-800">' + a.sentiment + ' (' + sentWidth + '%)</span></div>' +
-'<div class="flex items-center gap-2 mb-1"><span class="w-20 text-right text-green-800 font-medium">Priority</span><div class="flex-1 bg-gray-200 h-4 rounded-full overflow-hidden"><div class="' + priorityColors[a.priority] + ' h-full rounded-full" style="width:' + priorityWidth[a.priority] + '%"></div></div><span class="w-24 text-green-800">' + a.priority + '</span></div>' +
-'<div class="mt-1 pt-1 border-t border-green-200 text-green-700">Reason: ' + a.priority_reason + '</div>';
+'<div class="flex items-center gap-2 mb-1"><span class="w-20 text-right font-medium">Sentiment</span><div class="flex-1 bg-gray-200 h-4 rounded-full overflow-hidden"><div class="' + sentimentColors[a.sentiment] + ' h-full rounded-full" style="width:' + sentWidth + '%"></div></div><span class="w-24">' + escapeHtml(a.sentiment) + ' (' + sentWidth + '%)</span></div>' +
+'<div class="flex items-center gap-2 mb-1"><span class="w-20 text-right font-medium">Priority</span><div class="flex-1 bg-gray-200 h-4 rounded-full overflow-hidden"><div class="' + priorityColors[a.priority] + ' h-full rounded-full" style="width:' + priorityWidth[a.priority] + '%"></div></div><span class="w-24">' + escapeHtml(a.priority) + '</span></div>' +
+'<div class="mt-1 pt-1" style="border-top:1px solid #E4DCC8">Reason: ' + escapeHtml(a.priority_reason) + '</div>';
 }
 }).catch(() => {});
 fetch('/api/similar-complaints', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text})}).then(r=>r.json()).then(d=>{if(d.similar&&d.similar.length){similar.classList.remove('hidden');similar.className='mt-2 p-3 rounded-lg text-xs bg-purple-50 text-purple-700 border border-purple-100';let sh='<div class="font-semibold mb-1">Similar resolved complaints:</div>';d.similar.forEach(s=>{sh+='<div class="flex justify-between"><span>'+escapeHtml(s.subject).substring(0,60)+'</span><span class="text-purple-400">sim: '+escapeHtml(s.similarity)+'</span></div>'});similar.innerHTML=sh}}).catch(()=>{});
