@@ -1,4 +1,37 @@
 {
     "python-envs.defaultEnvManager": "ms-python.python:conda",
-    "python-envs.defaultPackageManager": "ms-python.python:conda"
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
+    "python.defaultInterpreterPath": "C:\\Users\\Acer\\anaconda3\\envs\\complaint-system\\python.exe",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/ComplaintMgmtSystem/ml",
+        "${workspaceFolder}/ComplaintMgmtSystem/backend"
+    ],
+    "cSpell.words": [
+        "complainify",
+        "dotenv",
+        "urandom",
+        "cursorclass",
+        "otps",
+        "pcts",
+        "depts",
+        "bigrams",
+        "figsize",
+        "edgecolor",
+        "fontsize",
+        "ylabel",
+        "labelsize",
+        "autotexts",
+        "autopct",
+        "wedgeprops",
+        "textprops",
+        "fontweight",
+        "markersize",
+        "ylim",
+        "axhline",
+        "linestyle",
+        "startangle",
+        "TIMESTAMPDIFF",
+        "TINYINT",
+        "LMARGIN"
+    ]
 }

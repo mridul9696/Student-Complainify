@@ -91,7 +91,7 @@ app.config['MAX_CONTENT_LENGTH'] = MAX_UPLOAD_MB * 1024 * 1024
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def get_db():
-    return pymysql.connect(**DB_CONFIG, cursorclass=pymysql.cursors.DictCursor)
+    return pymysql.connect(**DB_CONFIG, cursorclass=pymysql.cursors.DictCursor)  # type: ignore[arg-type]
 
 def hash_pw(pw):
     # scrypt (via werkzeug) with salt — replaces old unsalted SHA256.
@@ -216,9 +216,9 @@ def send_email_notification(to_email, subject, body):
         msg['To'] = to_email
         msg.set_content(body)
         context = ssl.create_default_context()
-        with smtplib.SMTP(SMTP_CONFIG['host'], SMTP_CONFIG['port'], timeout=10) as server:
+        with smtplib.SMTP(str(SMTP_CONFIG['host']), int(SMTP_CONFIG['port']), timeout=10) as server:  # type: ignore[arg-type]
             server.starttls(context=context)
-            server.login(SMTP_CONFIG['user'], SMTP_CONFIG['password'])
+            server.login(str(SMTP_CONFIG['user']), str(SMTP_CONFIG['password']))
             server.send_message(msg)
         return True
     except Exception as e:
@@ -1344,10 +1344,11 @@ def _chart_png(kind, **data):
         ax.grid(axis='y', alpha=0.3)
     elif kind in ('sentiment', 'status'):
         c = [pie_colors.get(label.split(' (')[0], '#6366f1') for label in labels]
-        wedges, _, autotexts = ax.pie(values, labels=labels, autopct='%1.0f%%',
-                                      startangle=90, colors=c,
-                                      wedgeprops=dict(width=0.35),
-                                      textprops={'fontsize': 9})
+        pie_result = ax.pie(values, labels=labels, autopct='%1.0f%%',
+                            startangle=90, colors=c,
+                                  wedgeprops=dict(width=0.35),
+                                  textprops={'fontsize': 9})
+        autotexts = pie_result[2] if len(pie_result) == 3 else []
         for at in autotexts:
             at.set_color('white')
             at.set_fontsize(8)
@@ -1615,7 +1616,7 @@ def admin_export_pdf():
         pdf.set_font('Helvetica', '', 11)
         pdf.set_text_color(30, 41, 59)
         for label, key in [('Total Complaints', 'total'), ('Resolved', 'resolved'), ('In Progress', 'in_progress'), ('Pending', 'pending')]:
-            val = stats[key] if stats[key] is not None else 0
+            val = (stats or {}).get(key) or 0
             pdf.cell(60, 8, f'{label}: {val}', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         pdf.ln(3)
         pdf.cell(60, 8, f'Avg Resolution: {avg_res} hrs', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -1669,7 +1670,8 @@ def admin_report_data():
     row = cur.fetchone()
     cur.close()
     conn.close()
-    return jsonify({'total': row['total'], 'resolved': row['resolved'], 'in_progress': row['in_progress'], 'pending': row['pending']})
+    row = row or {}
+    return jsonify({'total': row.get('total'), 'resolved': row.get('resolved'), 'in_progress': row.get('in_progress'), 'pending': row.get('pending')})
 
 # ── API: Auto-categorize ──
 
@@ -1760,7 +1762,7 @@ def api_predict_resolution():
                 COUNT(*) samples FROM complaints
                 WHERE status='Resolved' AND resolved_at IS NOT NULL""")
             row = cur.fetchone()
-            result = {'hours': round(float(row['avg_hrs'] or 48)), 'samples': row['samples'] if row else 0, 'confidence': 'low'}
+            result = {'hours': round(float((row or {}).get('avg_hrs') or 48)), 'samples': (row or {}).get('samples', 0) or 0, 'confidence': 'low'}
     cur.close()
     conn.close()
     return jsonify(result)
@@ -1876,7 +1878,7 @@ def admin_audit_logs():
         base += " AND action=%s"
         params.append(action_filter)
     cur.execute(f"SELECT COUNT(*) cnt FROM audit_logs {base}", params)
-    total = cur.fetchone()['cnt']
+    total = (cur.fetchone() or {}).get('cnt', 0)
     total_pages = max(1, (total + per_page - 1) // per_page)
     cur.execute(f"""SELECT audit_logs.*, users.fullname FROM audit_logs
         LEFT JOIN users ON audit_logs.user_id=users.id
@@ -1996,9 +1998,9 @@ def admin_training_logs():
     conn = get_db()
     cur = conn.cursor()
     cur.execute("SELECT COUNT(*) cnt FROM complaints")
-    total_complaints = cur.fetchone()['cnt']
+    total_complaints = (cur.fetchone() or {}).get('cnt', 0)
     cur.execute("SELECT COUNT(*) cnt FROM complaints WHERE status='Resolved'")
-    resolved = cur.fetchone()['cnt']
+    resolved = (cur.fetchone() or {}).get('cnt', 0)
     cur.close()
     conn.close()
     return render_template('admin/training_logs.html', log=log_data,
