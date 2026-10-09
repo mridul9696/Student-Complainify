@@ -323,6 +323,43 @@ body h6 { font-size: .8125rem; }
 }
 .aurora > * { position: relative; z-index: 1; }
 
+/* Bold dark hero — full-bleed navy anchor, glass triage card, grain */
+.hero-dark {
+  background:
+    radial-gradient(42rem 26rem at 12% -6%, rgba(33, 112, 228, .28), transparent 65%),
+    radial-gradient(36rem 24rem at 88% 108%, rgba(124, 92, 255, .20), transparent 65%),
+    linear-gradient(180deg, var(--navy-950) 0%, var(--navy-900) 100%);
+  color: #eaf1fb;
+}
+.hero-dark .display, .hero-dark h1 { color: #ffffff; }
+.hero-dark .hero-sub { color: #a9bcd6; }
+.hero-dark .eyebrow { background: rgba(255, 255, 255, .08); color: #cfe1ff; border-color: rgba(255, 255, 255, .16); }
+.hero-dark .stat__value { color: #ffffff; }
+.hero-dark .stat__label { color: #8fa3bf; }
+.hero-dark .divider--v { background: rgba(255, 255, 255, .14); }
+.hero-dark .card--glass {
+  background: rgba(255, 255, 255, .07);
+  border: 1px solid rgba(255, 255, 255, .14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), 0 24px 60px rgba(0, 0, 0, .45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #eaf1fb;
+}
+.hero-dark .card--glass .muted, .hero-dark .card--glass .conf__label { color: #a9bcd6; }
+.hero-dark .card--glass .conf__value { color: #eaf1fb; }
+.hero-dark .card--glass .conf__track { background: rgba(255, 255, 255, .12); }
+/* Film grain over the hero — breaks digital flatness */
+.hero-dark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.hero-dark > * { position: relative; z-index: 1; }
+
 .grid-lines {
   position: absolute;
   inset: 0;
