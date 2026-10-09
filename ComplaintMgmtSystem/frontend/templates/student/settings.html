@@ -30,6 +30,7 @@
 <div class="bg-surface-white rounded-2xl border border-outline-variant shadow-sm p-6">
 <h2 class="text-lg font-bold text-primary mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-secondary">person</span>Profile</h2>
 <form method="POST" class="space-y-4">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <input type="hidden" name="action" value="profile">
 <div class="space-y-1.5"><label class="block text-xs font-medium text-on-surface-variant">Full Name</label><input name="fullname" value="{{ user.fullname }}" class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface focus:ring-2 focus:ring-secondary focus:border-secondary outline-none text-sm"></div>
 <div class="space-y-1.5"><label class="block text-xs font-medium text-on-surface-variant">Email</label><input value="{{ user.email }}" disabled class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface text-sm text-gray-400 cursor-not-allowed"></div>
@@ -47,6 +48,7 @@
 <div class="bg-surface-white rounded-2xl border border-outline-variant shadow-sm p-6">
 <h2 class="text-lg font-bold text-primary mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-secondary">lock</span>Change Password</h2>
 <form method="POST" class="space-y-4">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <input type="hidden" name="action" value="password">
 <div class="space-y-1.5"><label class="block text-xs font-medium text-on-surface-variant">Current Password</label><input type="password" name="current_password" class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface focus:ring-2 focus:ring-secondary focus:border-secondary outline-none text-sm"></div>
 <div class="space-y-1.5"><label class="block text-xs font-medium text-on-surface-variant">New Password</label><input type="password" name="new_password" class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface focus:ring-2 focus:ring-secondary focus:border-secondary outline-none text-sm"></div>

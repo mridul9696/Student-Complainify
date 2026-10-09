@@ -27,6 +27,7 @@
 <h1 class="form-card__title">Track your complaint</h1>
 <p>Enter the ticket ID from your confirmation email to see its live status.</p>
 <form method="POST" class="stack stack--sm">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <div class="field">
 <label class="field__label" for="ticket_id">Ticket ID</label>
 <div class="input-icon">

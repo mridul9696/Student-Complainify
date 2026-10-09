@@ -32,6 +32,7 @@
 {% endif %}
 {% endwith %}
 <form method="POST" class="stack stack--sm">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <div class="field">
 <label class="field__label" for="email">Work email</label>
 <div class="input-icon">

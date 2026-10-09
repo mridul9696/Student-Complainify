@@ -133,6 +133,13 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
+-- Indexes for the admin queue filters and default ranked sort
+CREATE INDEX idx_complaints_status ON complaints (status);
+CREATE INDEX idx_complaints_priority ON complaints (priority);
+CREATE INDEX idx_complaints_category ON complaints (category);
+CREATE INDEX idx_complaints_status_priority ON complaints (status, priority);
+CREATE INDEX idx_complaints_created ON complaints (created_at);
+
 -- Sample users
 INSERT IGNORE INTO users (id, fullname, email, phone, password, role) VALUES
 (1, 'Ram Sharma', 'ram@gmail.com', '9812345678', SHA2('pass123', 256), 'student'),

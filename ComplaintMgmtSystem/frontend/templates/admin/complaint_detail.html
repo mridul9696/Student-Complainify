@@ -86,6 +86,7 @@
 </div>
 {% endif %}
 <form method="POST" action="{{ url_for('admin_assign', ticket_id=c.ticket_id) }}" class="space-y-3">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <select name="assigned_to" class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[#d32f2f] focus:border-[#d32f2f] outline-none">
 <option value="">— {{ 'Reassign' if c.assigned_to else 'Select department' }} —</option>
 {% for d in departments %}
@@ -98,6 +99,7 @@
 <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
 <h3 class="text-sm font-bold text-[#0a1628] mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm text-[#d32f2f]">update</span>Update Status</h3>
 <form method="POST" action="{{ url_for('admin_update_status', ticket_id=c.ticket_id) }}" class="space-y-3" enctype="multipart/form-data">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <select name="status" class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[#d32f2f] focus:border-[#d32f2f] outline-none">
 <option value="Pending" {% if c.status == 'Pending' %}selected{% endif %}>Pending</option>
 <option value="In Progress" {% if c.status == 'In Progress' %}selected{% endif %}>In Progress</option>
@@ -118,6 +120,7 @@
 <h3 class="text-sm font-bold text-[#0a1628] flex items-center gap-2"><span class="material-symbols-outlined text-sm text-[#d32f2f]">verified</span>Actions</h3>
 {% if not c.validated %}
 <form method="POST" action="{{ url_for('admin_validate', ticket_id=c.ticket_id) }}">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <button type="submit" class="w-full bg-green-600 text-white text-sm font-semibold py-2.5 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-1.5"><span class="material-symbols-outlined text-sm">check</span>Validate as Legitimate</button>
 </form>
 {% else %}
@@ -125,6 +128,7 @@
 {% endif %}
 {% if not c.category_confirmed %}
 <form method="POST" action="{{ url_for('admin_confirm_label', ticket_id=c.ticket_id) }}" class="space-y-2 border-t border-gray-100 pt-3">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <label class="text-xs text-gray-500 block">Confirm true category (becomes training data)</label>
 <select name="category" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[#d32f2f] outline-none">
 {% for d in departments %}<option value="{{ d }}" {% if c.category == d %}selected{% endif %}>{{ d }}</option>{% endfor %}
@@ -135,6 +139,7 @@
 <p class="text-xs text-indigo-600 flex items-center gap-1 border-t border-gray-100 pt-3"><span class="material-symbols-outlined text-sm">dataset</span> Category confirmed{% if c.confirmed_by %} by {{ c.confirmed_by }}{% endif %}{% if c.confirmed_at %} on {{ c.confirmed_at }}{% endif %}</p>
 {% endif %}
 <form method="POST" action="{{ url_for('admin_resend_email', ticket_id=c.ticket_id) }}">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <button type="submit" class="w-full bg-blue-600 text-white text-sm font-semibold py-2.5 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-1.5"><span class="material-symbols-outlined text-sm">mail</span>Resend Email Notification</button>
 </form>
 </div>
@@ -151,6 +156,7 @@
 {% endfor %}
 </div>
 <form method="POST" action="{{ url_for('add_comment', ticket_id=c.ticket_id) }}" class="flex gap-2">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <input type="text" name="message" placeholder="Write a reply..." required class="flex-1 min-w-0 px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[#d32f2f] outline-none">
 <button type="submit" class="bg-[#0a1628] text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#1a2a3a] transition-colors flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">send</span>Send</button>
 </form>

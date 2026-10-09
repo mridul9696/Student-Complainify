@@ -545,6 +545,52 @@ def login_required(role=None):
         return False
     return True
 
+
+_login_attempts = {}
+_LOGIN_WINDOW_SEC = 5 * 60
+_LOGIN_MAX_TRIES = 5
+
+
+def _login_allowed(email):
+    # In-memory per-process throttle (fine for local demo; use Redis/DB for multi-worker prod).
+    import time
+    now = time.time()
+    tries = [t for t in _login_attempts.get(email, []) if now - t < _LOGIN_WINDOW_SEC]
+    _login_attempts[email] = tries
+    return len(tries) < _LOGIN_MAX_TRIES
+
+
+def _login_record(email, ok):
+    import time
+    if ok:
+        _login_attempts.pop(email, None)
+    else:
+        _login_attempts.setdefault(email, []).append(time.time())
+
+
+def _csrf_token():
+    token = session.get('_csrf_token')
+    if not token:
+        token = os.urandom(32).hex()
+        session['_csrf_token'] = token
+    return token
+
+
+@app.context_processor
+def _inject_csrf():
+    return {'csrf_token': _csrf_token}
+
+
+@app.before_request
+def _check_csrf():
+    # JSON API endpoints carry no token (documented gap for local demo).
+    if request.method == 'POST' and not request.path.startswith('/api/'):
+        submitted = request.form.get('csrf_token', '')
+        expected = session.get('_csrf_token', '')
+        if not submitted or not expected or submitted != expected:
+            flash('Session expired. Please try again.', 'error')
+            return redirect(request.referrer or url_for('index'))
+
 # ── STUDENT ROUTES ──
 
 @app.route('/student/login', methods=['GET', 'POST'])
@@ -554,6 +600,9 @@ def student_login():
     if request.method == 'POST':
         email = request.form.get('email', '').strip()
         raw_pw = request.form.get('password', '')
+        if not _login_allowed(email.lower()):
+            flash('Too many attempts. Try again in 5 minutes.', 'error')
+            return render_template('student/login.html')
         conn = get_db()
         cur = conn.cursor()
         cur.execute("SELECT id,fullname,email,password,role,phone,college FROM users WHERE email=%s AND role='student'", (email,))
@@ -570,9 +619,12 @@ def student_login():
                 cur.close()
                 conn.close()
                 log_action(user['id'], 'login', 'session', '', 'Student login')
+                _login_record(email.lower(), True)
                 return redirect(url_for('student_dashboard'))
+            _login_record(email.lower(), False)
             flash('Incorrect password. Please try again.', 'error')
         else:
+            _login_record(email.lower(), False)
             flash('Account not found with this email.', 'error')
         cur.close()
         conn.close()
@@ -742,6 +794,9 @@ def admin_login():
     if request.method == 'POST':
         email = request.form.get('email', '').strip()
         raw_pw = request.form.get('password', '')
+        if not _login_allowed(email.lower()):
+            flash('Too many attempts. Try again in 5 minutes.', 'error')
+            return render_template('admin/login.html')
         conn = get_db()
         cur = conn.cursor()
         cur.execute("SELECT id,fullname,email,password,role FROM users WHERE email=%s AND role='admin'", (email,))
@@ -756,9 +811,12 @@ def admin_login():
                 cur.close()
                 conn.close()
                 log_action(user['id'], 'login', 'session', '', 'Admin login')
+                _login_record(email.lower(), True)
                 return redirect(url_for('admin_dashboard'))
+            _login_record(email.lower(), False)
             flash('Incorrect password.', 'error')
         else:
+            _login_record(email.lower(), False)
             flash('Admin account not found.', 'error')
         cur.close()
         conn.close()
@@ -2230,6 +2288,17 @@ def init_db():
             message TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )""")
+        for idx_sql in [
+            "CREATE INDEX idx_complaints_status ON complaints (status)",
+            "CREATE INDEX idx_complaints_priority ON complaints (priority)",
+            "CREATE INDEX idx_complaints_category ON complaints (category)",
+            "CREATE INDEX idx_complaints_status_priority ON complaints (status, priority)",
+            "CREATE INDEX idx_complaints_created ON complaints (created_at)",
+        ]:
+            try:
+                cur.execute(idx_sql)
+            except Exception:
+                pass  # index already exists
         conn.commit()
         cur.close()
         conn.close()

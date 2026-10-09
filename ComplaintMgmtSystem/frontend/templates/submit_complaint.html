@@ -19,6 +19,7 @@
 </div>
 <div class="auth__body">
 <form method="POST" class="stack stack--sm" id="complaintForm" enctype="multipart/form-data">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 {% if request.args.get('anonymous') %}
 <div class="form-message warning">
 <span class="material-symbols-outlined icon-sm">incognito</span>
