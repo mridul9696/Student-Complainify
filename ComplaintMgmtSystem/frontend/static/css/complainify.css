@@ -2126,3 +2126,29 @@ input.input[type="file"]::file-selector-button:hover { filter: brightness(1.06);
 .reg-disclosure { border: 1px solid #E4DCC8; border-radius: 12px; padding: .9rem 1.1rem; background: #FFFDF8; }
 .reg-disclosure summary { cursor: pointer; font-weight: 700; font-size: .875rem; color: #0F2A43; }
 .reg-disclosure summary::marker { color: #8C2F1B; }
+
+/* Register world after dark — same ledger, night reading room */
+[data-theme="dark"] .sit { background: #0A1322; }
+[data-theme="dark"] .sit-nav { background: #0A1322; border-bottom-color: #1E2C45; }
+[data-theme="dark"] .sit-hero { background: #0A1322; border-bottom-color: #1E2C45; }
+[data-theme="dark"] .sit-display { color: #F2EFE6; }
+[data-theme="dark"] .sit-sub { color: #9FB2C8; }
+[data-theme="dark"] .sit-proof { color: #9FB2C8; }
+[data-theme="dark"] .sit-proof__num { color: #F2EFE6; }
+[data-theme="dark"] .sit-proof .link { color: #D08A63; }
+[data-theme="dark"] .sit-hero__actions .btn--primary { background: #A63E24; box-shadow: 0 10px 24px rgba(0, 0, 0, .5); }
+[data-theme="dark"] .sit-queue { background: #0C1729; border-color: #1E2C45; }
+[data-theme="dark"] .sit-queue__head { background: #0A1322; border-bottom-color: #1E2C45; }
+[data-theme="dark"] .sit-queue__title { color: #F2EFE6; }
+[data-theme="dark"] .sit-case { border-bottom-color: #1E2C45; }
+[data-theme="dark"] .sit-case__subject { color: #EAF1FB; }
+[data-theme="dark"] .sit-case__why, [data-theme="dark"] .sit-ticket { color: #9FB2C8; }
+[data-theme="dark"] .sit-age { color: #EAF1FB; }
+[data-theme="dark"] .sit-queue__foot { background: #0A1322; color: #9FB2C8; }
+[data-theme="dark"] .sit-tablewrap { background: #0C1729; border-color: #1E2C45; }
+[data-theme="dark"] .sit-table th, [data-theme="dark"] .sit-table td { border-bottom-color: #1E2C45; color: #C9D6E8; }
+[data-theme="dark"] .sit-table__cap, [data-theme="dark"] .sit-steps-head h2, [data-theme="dark"] .sit-step h3, [data-theme="dark"] .sit-close h2 { color: #F2EFE6; }
+[data-theme="dark"] .sit-step + .sit-step { border-top-color: #1E2C45; }
+[data-theme="dark"] .sit-step p, [data-theme="dark"] .sit-steps-head .sit-sub { color: #9FB2C8; }
+[data-theme="dark"] .reg-disclosure { background: #0C1729; border-color: #1E2C45; }
+[data-theme="dark"] .reg-disclosure summary { color: #EAF1FB; }
