@@ -1,6 +1,8 @@
 import csv
 import hashlib
 import io
+import importlib
+import importlib.util
 import json
 import os
 import random
@@ -23,12 +25,15 @@ load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 # ml/sentiment.py etc use absolute package imports, so parent must be on path.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ml'))
-from classifier import categorize, predict_top3, detect_anomaly, clean_and_tokenize  # noqa: E402
-import model_registry  # noqa: E402
+from ComplaintMgmtSystem.ml.classifier import categorize, predict_top3, detect_anomaly, clean_and_tokenize  # noqa: E402  # type: ignore[reportMissingImports]
+
+model_registry = importlib.import_module('ComplaintMgmtSystem.ml.model_registry')  # noqa: E402  # cspell:ignore Mgmt
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ml'))
-from sentiment import analyze_sentiment  # noqa: E402
-from priority import compute_priority  # noqa: E402
-from model_stats import model_cards, correlation_matrix  # noqa: E402
+from ComplaintMgmtSystem.ml.sentiment import analyze_sentiment  # noqa: E402  # type: ignore[reportMissingImports]
+from ComplaintMgmtSystem.ml.priority import compute_priority  # noqa: E402  # type: ignore[reportMissingImports]
+_model_stats = importlib.import_module('ComplaintMgmtSystem.ml.model_stats')  # noqa: E402
+model_cards = _model_stats.model_cards
+correlation_matrix = _model_stats.correlation_matrix
 
 app = Flask(
     __name__,
@@ -1350,8 +1355,21 @@ def admin_report():
 
     # Sentiment x Priority analysis (merged from the old analysis page)
     sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ml'))
-    import gen_analysis
+    gen_analysis = None
+    gen_analysis_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ml', 'gen_analysis.py')
+    if os.path.isfile(gen_analysis_path):
+        spec = importlib.util.spec_from_file_location('gen_analysis', gen_analysis_path)
+        if spec and spec.loader:
+            gen_analysis = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(gen_analysis)
+    if gen_analysis is None:
+        try:
+            import gen_analysis  # type: ignore[reportMissingImports]
+        except Exception:
+            gen_analysis = None
     try:
+        if gen_analysis is None:
+            raise ModuleNotFoundError("gen_analysis.py not found")
         analysis_rows = gen_analysis.fetch_rows()
         analysis = gen_analysis.build_analysis(analysis_rows)
         analysis['rows'] = len(analysis_rows)
@@ -2068,8 +2086,8 @@ def _run_retrain_script(timeout=180):
     if not log_data:
         return False, {}, 'retrain produced no JSON output'
     try:
-        import classifier as clf
-        clf._model = None  # force get_model() reload on next predict
+        clf = importlib.import_module('ComplaintMgmtSystem.ml.classifier')
+        setattr(clf, '_model', None)  # force get_model() reload on next predict
     except Exception as e:
         print(f"[RETRAIN RELOAD] {e}")
     return True, log_data, ''
