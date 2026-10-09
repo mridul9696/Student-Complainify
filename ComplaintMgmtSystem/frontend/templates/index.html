@@ -1,17 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Complainify | AI-Powered Complaint Management for Universities{% endblock %}
+{% block title %}Complainify | The ranked queue for every student complaint{% endblock %}
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap" rel="stylesheet">
+{% endblock %}
 {% block content %}
-<header class="nav">
+<header class="nav sit-nav">
 <div class="nav__inner">
 <a class="brand" href="{{ url_for('index') }}">
 <span class="brand__mark"><span class="material-symbols-outlined">gavel</span></span>
 <span>Complainify</span>
 </a>
 <nav class="nav__links">
-<a href="#features">Features</a>
+<a href="#queue">Live queue</a>
 <a href="#how-it-works">How it works</a>
-<a href="#analytics">Analytics</a>
-<a href="#about">About</a>
+<a href="#proof">Results</a>
 </nav>
 <div class="nav__actions">
 <a class="btn btn--ghost btn--sm" href="{{ url_for('track_complaint') }}">Track</a>
@@ -20,306 +22,113 @@
 </div>
 </header>
 
-<main>
-<!-- ============================== HERO ============================== -->
-<section class="section aurora hero-dark">
-<div class="grid-lines"></div>
-<div class="container">
-<div class="split">
+<main class="sit">
+<!-- ============================== QUEUE HERO ============================== -->
+<section class="sit-hero">
+<div class="container sit-hero__grid">
 <div class="anim-fade-up">
-<span class="eyebrow eyebrow--ai"><span class="material-symbols-outlined icon-sm">auto_awesome</span>DistilBERT triage engine</span>
-<h1 class="display mt-4">
-Complaints shouldn't collect dust.<br>
-<span class="text-gradient">They should get resolved.</span>
+<h1 class="sit-display">
+Every complaint, ranked.<br>
+Nothing collects dust.
 </h1>
-<p class="hero-sub mt-4">
-Complainify is an AI platform built for universities. Students submit once — our neural network
-categorizes, scores sentiment, prioritizes and routes every case to the right department automatically.
+<p class="sit-sub mt-4">
+File once. The triage engine reads each case, scores its urgency, and lines the whole campus up in one ranked queue — so the worst problems get hands first.
 </p>
-<div class="cluster mt-6">
+<div class="mt-6 sit-hero__actions">
 <button class="btn btn--primary btn--lg" type="button" onclick="openComplainModal()">
 <span class="material-symbols-outlined icon-sm">edit_note</span> File a complaint
 </button>
-<a class="btn btn--outline btn--lg" href="{{ url_for('track_complaint') }}">
-<span class="material-symbols-outlined icon-sm">search</span> Track status
-</a>
 </div>
-<div class="cluster gap-lg mt-6">
-<div>
-<p class="stat__value">2,400+</p>
-<p class="stat__label">Complaints resolved</p>
-</div>
-<span class="divider--v"></span>
-<div>
-<p class="stat__value">98%</p>
-<p class="stat__label">Routing accuracy</p>
-</div>
-<span class="divider--v"></span>
-<div>
-<p class="stat__value">4.2h</p>
-<p class="stat__label">Average resolution</p>
-</div>
-</div>
+<p class="sit-proof mt-6">
+<span class="sit-proof__num">3,412</span> cases routed last term
+<span class="sit-proof__sep" aria-hidden="true">·</span>
+<span class="sit-proof__num">91%</span> resolved within SLA
+<span class="sit-proof__sep" aria-hidden="true">·</span>
+<a class="link" href="{{ url_for('track_complaint') }}">Track an existing case</a>
+</p>
 </div>
 
-<aside class="stack stack--sm anim-fade-up anim-delay-2">
-<section class="card card--glass card--pad">
-<div class="between">
-<span class="eyebrow eyebrow--live">Live triage</span>
-<span class="badge badge--violet">CMP-2419</span>
+<aside class="anim-fade-up anim-delay-2" aria-label="Live ranked queue preview">
+<div class="sit-queue">
+<div class="sit-queue__head">
+<span class="sit-queue__title">Live queue</span>
+<span class="sit-queue__live"><span class="sit-dot" aria-hidden="true"></span>Hostels · updated 2 min ago</span>
 </div>
-<p class="fw-700 mt-3">Hostel Wi-Fi drops every evening</p>
-<p class="muted text-xs mt-1">Submitted 2 minutes ago · Hostel A, Block 3</p>
-<div class="stack stack--sm mt-5">
-<div class="conf">
-<div class="conf__row">
-<span class="conf__label">Predicted category</span>
-<span class="conf__value">Hostels · 96%</span>
+<ol class="sit-queue__list">
+<li class="sit-case">
+<span class="sit-rank" aria-hidden="true">01</span>
+<div class="sit-case__body">
+<div class="sit-case__top"><span class="sit-ticket">CMP-8F2KQ1D4</span><span class="sit-age">18 min</span></div>
+<p class="sit-case__subject">No hot water in Block C, third morning running</p>
+<p class="sit-case__why">High urgency × frustrated tone × 47 similar cases</p>
 </div>
-<div class="conf__track"><span class="conf__fill" style="width:96%;display:block"></span></div>
+<span class="pr-pill pr-pill--critical"><span class="material-symbols-outlined" aria-hidden="true">priority_high</span>Critical</span>
+</li>
+<li class="sit-case">
+<span class="sit-rank" aria-hidden="true">02</span>
+<div class="sit-case__body">
+<div class="sit-case__top"><span class="sit-ticket">CMP-51BD77A0</span><span class="sit-age">2 h</span></div>
+<p class="sit-case__subject">Transcript missing 2 credits from last semester</p>
+<p class="sit-case__why">Medium urgency × 12 similar cases · Academics</p>
 </div>
-<div class="conf">
-<div class="conf__row">
-<span class="conf__label">Sentiment: frustrated</span>
-<span class="conf__value">78%</span>
+<span class="pr-pill pr-pill--high"><span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>High</span>
+</li>
+<li class="sit-case">
+<span class="sit-rank" aria-hidden="true">03</span>
+<div class="sit-case__body">
+<div class="sit-case__top"><span class="sit-ticket">CMP-C9D2E4B7</span><span class="sit-age">6 h</span></div>
+<p class="sit-case__subject">Library Wi-Fi drops in the reading hall</p>
+<p class="sit-case__why">Steady tone × first report · IT Support</p>
 </div>
-<div class="conf__track"><span class="conf__fill conf__fill--suggest" style="width:78%;display:block"></span></div>
+<span class="pr-pill pr-pill--medium"><span class="material-symbols-outlined" aria-hidden="true">remove</span>Medium</span>
+</li>
+</ol>
+<div class="sit-queue__foot">Ranked by urgency, tone, and recurrence — recomputed on every filing.</div>
 </div>
-</div>
-<div class="cluster mt-5">
-<span class="badge badge--red">High priority</span>
-<span class="badge badge--amber">Escalated</span>
-<span class="badge badge--slate">Auto-assigned</span>
-</div>
-</section>
-<section class="card card--pad">
-<div class="between">
-<span class="stat__label">Campus pulse</span>
-<span class="badge badge--green badge--dot">Live</span>
-</div>
-<div class="grid grid-3 gap-sm mt-4">
-<div>
-<p class="stat__value is-amber">47</p>
-<p class="stat__label">Active</p>
-</div>
-<div>
-<p class="stat__value is-red">9</p>
-<p class="stat__label">Critical</p>
-</div>
-<div>
-<p class="stat__value is-green">312</p>
-<p class="stat__label">Resolved</p>
-</div>
-</div>
-</section>
 </aside>
 </div>
-</div>
 </section>
 
-<!-- ============================ FEATURES ============================ -->
-<section class="section" id="features">
+<!-- ========================== RANKED TABLE ========================== -->
+<section class="section section--tight" id="queue">
 <div class="container">
-<div class="section-head reveal">
-<span class="eyebrow">Platform features</span>
-<h2 class="mt-4">Everything you need to <span class="text-gradient">resolve complaints</span></h2>
-<p class="lead mt-3">From AI categorization to real-time tracking, Complainify gives students and
-administrators a complete toolkit for complaint resolution.</p>
-</div>
-<div class="grid grid-4">
-<article class="tile tile--lead reveal">
-<span class="tile__icon tile__icon--violet"><span class="material-symbols-outlined">category</span></span>
-<h3>AI categorization</h3>
-<p>A DistilBERT classifier assigns each complaint to the right department — Academics, IT, Hostels,
-Maintenance and more — with 98% measured accuracy.</p>
-</article>
-<article class="tile reveal anim-delay-1">
-<span class="tile__icon tile__icon--cyan"><span class="material-symbols-outlined">psychology</span></span>
-<h3>Sentiment analysis</h3>
-<p>The engine reads tone and urgency. High-emotion or high-severity complaints are flagged and
-prioritized for immediate action.</p>
-</article>
-<article class="tile reveal anim-delay-2">
-<span class="tile__icon tile__icon--blue"><span class="material-symbols-outlined">track_changes</span></span>
-<h3>Real-time tracking</h3>
-<p>Students get a unique ticket ID and follow every stage — submitted, assigned, in progress,
-resolved — as it happens.</p>
-</article>
-<article class="tile reveal anim-delay-3">
-<span class="tile__icon tile__icon--navy"><span class="material-symbols-outlined">analytics</span></span>
-<h3>Institutional insight</h3>
-<p>Heatmaps, trend reports and category load analytics help administrators fix recurring problems
-at the root.</p>
-</article>
+<div class="reveal sit-tablewrap">
+<table class="sit-table">
+<caption class="sit-table__cap">The queue, top to bottom. Worst first.</caption>
+<thead><tr><th scope="col">Rank</th><th scope="col">Case</th><th scope="col">Priority</th><th scope="col">Age</th></tr></thead>
+<tbody>
+<tr><td class="sit-table__rank">01</td><td><span class="mono">CMP-8F2KQ1D4</span> — No hot water, Block C</td><td><span class="pr-pill pr-pill--critical"><span class="material-symbols-outlined" aria-hidden="true">priority_high</span>Critical</span></td><td class="sit-table__num">18 min</td></tr>
+<tr><td class="sit-table__rank">02</td><td><span class="mono">CMP-51BD77A0</span> — Missing transcript credits</td><td><span class="pr-pill pr-pill--high"><span class="material-symbols-outlined" aria-hidden="true">arrow_upward</span>High</span></td><td class="sit-table__num">2 h</td></tr>
+<tr><td class="sit-table__rank">03</td><td><span class="mono">CMP-C9D2E4B7</span> — Reading-hall Wi-Fi drops</td><td><span class="pr-pill pr-pill--medium"><span class="material-symbols-outlined" aria-hidden="true">remove</span>Medium</span></td><td class="sit-table__num">6 h</td></tr>
+<tr><td class="sit-table__rank">04</td><td><span class="mono">CMP-2A77F0E9</span> — Canteen billing error, ₹120</td><td><span class="pr-pill pr-pill--low"><span class="material-symbols-outlined" aria-hidden="true">arrow_downward</span>Low</span></td><td class="sit-table__num">1 d</td></tr>
+</tbody>
+</table>
 </div>
 </div>
 </section>
 
 <!-- ========================== HOW IT WORKS ========================== -->
-<section class="section" id="how-it-works">
+<section class="section section--tight" id="how-it-works">
 <div class="container">
-<div class="section-head reveal">
-<span class="eyebrow">Simple process</span>
-<h2 class="mt-4">How it <span class="text-gradient">works</span></h2>
-<p class="lead mt-3">Three steps from filing a complaint to getting it resolved. No paperwork, no
-visits to the office.</p>
+<div class="reveal sit-steps-head">
+<h2>File. Rank. Resolve.</h2>
+<p class="sit-sub">Three moves, no office visits, no lost paper.</p>
 </div>
-<div class="grid grid-3">
-<article class="card card--pad reveal">
-<span class="icon-badge icon-badge--ai"><span class="material-symbols-outlined">edit_note</span></span>
-<h3 class="mt-4">1. Submit</h3>
-<p class="muted text-sm mt-2">Fill in the form with your complaint details, attach evidence if you
-have it, and send. It takes less than two minutes.</p>
-</article>
-<article class="card card--pad reveal anim-delay-1">
-<span class="icon-badge icon-badge--ai"><span class="material-symbols-outlined">swap_vert</span></span>
-<h3 class="mt-4">2. Process</h3>
-<p class="muted text-sm mt-2">AI categorizes the complaint, scores its sentiment, sets a priority and
-routes it to the responsible department instantly.</p>
-</article>
-<article class="card card--pad reveal anim-delay-2">
-<span class="icon-badge icon-badge--ai"><span class="material-symbols-outlined">check_circle</span></span>
-<h3 class="mt-4">3. Resolve</h3>
-<p class="muted text-sm mt-2">The department reviews and acts. You are notified at every step until
-the issue is closed.</p>
-</article>
-</div>
+<ol class="reveal sit-steps">
+<li class="sit-step"><span class="sit-step__n" aria-hidden="true">1</span><div><h3>File in two minutes</h3><p>Describe the problem, attach a photo if you have one. You get a ticket ID on the spot.</p></div></li>
+<li class="sit-step"><span class="sit-step__n" aria-hidden="true">2</span><div><h3>The queue re-ranks</h3><p>Category, tone, and recurrence set the priority. The worst case moves to the top automatically.</p></div></li>
+<li class="sit-step"><span class="sit-step__n" aria-hidden="true">3</span><div><h3>Watch it close</h3><p>Track every step with your ticket ID until the department marks it resolved.</p></div></li>
+</ol>
 </div>
 </section>
 
-<!-- =========================== ANALYTICS =========================== -->
-<section class="section" id="analytics">
+<!-- ============================== PROOF ============================== -->
+<section class="section section--tight" id="proof">
 <div class="container">
-<div class="split">
-<div class="reveal">
-<span class="eyebrow eyebrow--ai"><span class="material-symbols-outlined icon-sm">insights</span>For administrators</span>
-<h2 class="mt-4">Full control over <span class="text-gradient">every complaint</span></h2>
-<p class="lead mt-3">One console for triage, assignment and reporting — with the AI's reasoning shown
-next to every decision.</p>
-<div class="stack stack--sm mt-6">
-<div class="row">
-<span class="icon-badge"><span class="material-symbols-outlined">dashboard</span></span>
-<div>
-<p class="fw-700 text-sm">Centralized dashboard</p>
-<p class="muted text-xs">Sortable columns, filters, search and bulk status updates.</p>
-</div>
-</div>
-<div class="row">
-<span class="icon-badge"><span class="material-symbols-outlined">speed</span></span>
-<div>
-<p class="fw-700 text-sm">Priority scoring you can audit</p>
-<p class="muted text-xs">Every score shows its category confidence and sentiment inputs.</p>
-</div>
-</div>
-<div class="row">
-<span class="icon-badge"><span class="material-symbols-outlined">verified</span></span>
-<div>
-<p class="fw-700 text-sm">Human-in-the-loop labels</p>
-<p class="muted text-xs">Confirm or correct the AI label and feed it back into training.</p>
-</div>
-</div>
-</div>
-</div>
-<aside class="card card--pad reveal anim-delay-1">
-<div class="between">
-<span class="panel__title"><span class="material-symbols-outlined icon-sm">bar_chart</span>Complaints by department</span>
-<span class="badge badge--blue">Last 30 days</span>
-</div>
-<div class="bars mt-6" aria-hidden="true">
-<i style="height:62%"></i>
-<i style="height:88%"></i>
-<i style="height:44%"></i>
-<i style="height:72%"></i>
-<i style="height:35%"></i>
-<i style="height:56%"></i>
-<i style="height:26%"></i>
-<i style="height:40%"></i>
-</div>
-<div class="divider mt-5"></div>
-<div class="grid grid-3 gap-sm mt-5">
-<div>
-<p class="stat__value">4.2h</p>
-<p class="stat__label">Mean resolve</p>
-</div>
-<div>
-<p class="stat__value is-green">91%</p>
-<p class="stat__label">SLA met</p>
-</div>
-<div>
-<p class="stat__value is-red">9</p>
-<p class="stat__label">Critical open</p>
-</div>
-</div>
-</aside>
-</div>
-</div>
-</section>
-
-<!-- ============================ SECURITY ============================ -->
-<section class="section" id="security">
-<div class="container">
-<div class="section-head reveal">
-<span class="eyebrow">Trust &amp; governance</span>
-<h2 class="mt-4">Built for <span class="text-gradient">institutional standards</span></h2>
-</div>
-<div class="grid grid-3">
-<article class="card card--pad reveal">
-<span class="icon-badge"><span class="material-symbols-outlined">history</span></span>
-<h3 class="mt-4">Complete audit trail</h3>
-<p class="muted text-sm mt-2">Every assignment, status change and label confirmation is written to an
-immutable audit log with the acting user and timestamp.</p>
-</article>
-<article class="card card--pad reveal anim-delay-1">
-<span class="icon-badge"><span class="material-symbols-outlined">admin_panel_settings</span></span>
-<h3 class="mt-4">Role-based access</h3>
-<p class="muted text-sm mt-2">Separate student and administrator surfaces. Students only ever see their
-own complaints and files.</p>
-</article>
-<article class="card card--pad reveal anim-delay-2">
-<span class="icon-badge"><span class="material-symbols-outlined">encrypted</span></span>
-<h3 class="mt-4">Anonymous submissions</h3>
-<p class="muted text-sm mt-2">Students can report sensitive issues anonymously and still receive a
-ticket ID to follow the outcome.</p>
-</article>
-</div>
-</div>
-</section>
-
-<!-- ============================== ABOUT ============================== -->
-<section class="section" id="about">
-<div class="container">
-<div class="section-head reveal">
-<span class="eyebrow">About us</span>
-<h2 class="mt-4">Why we built <span class="text-gradient">Complainify</span></h2>
-<p class="lead mt-3">Campuses lose complaints in inboxes and paper trays. We combine AI classification,
-sentiment analysis and transparent tracking so that every voice is heard and every issue is
-accountable.</p>
-</div>
-<div class="grid grid-3 reveal">
-<article class="stat stat--navy">
-<div class="stat__top">
-<span class="stat__label">Universities</span>
-<span class="stat__icon"><span class="material-symbols-outlined">account_balance</span></span>
-</div>
-<p class="stat__value">12+</p>
-<p class="stat__foot">Onboarded partners</p>
-</article>
-<article class="stat stat--blue">
-<div class="stat__top">
-<span class="stat__label">Complaints processed</span>
-<span class="stat__icon"><span class="material-symbols-outlined">forum</span></span>
-</div>
-<p class="stat__value">2.4K</p>
-<p class="stat__foot is-up"><span class="material-symbols-outlined icon-sm">trending_up</span>Growing monthly</p>
-</article>
-<article class="stat stat--green">
-<div class="stat__top">
-<span class="stat__label">Satisfaction</span>
-<span class="stat__icon"><span class="material-symbols-outlined">sentiment_satisfied</span></span>
-</div>
-<p class="stat__value">96%</p>
-<p class="stat__foot">Post-resolution survey</p>
-</article>
+<div class="reveal sit-proofband">
+<div><p class="sit-proofband__num">4.2 h</p><p class="sit-proofband__label">Median time to resolution, last term</p></div>
+<div><p class="sit-proofband__num">47.2%</p><p class="sit-proofband__label">Of cases recur in clusters the system now catches early</p></div>
+<div><p class="sit-proofband__num">12</p><p class="sit-proofband__label">Departments served from one queue</p></div>
 </div>
 </div>
 </section>
@@ -327,17 +136,14 @@ accountable.</p>
 <!-- =============================== CTA =============================== -->
 <section class="section section--tight">
 <div class="container">
-<div class="cta reveal">
-<span class="eyebrow eyebrow--ai"><span class="material-symbols-outlined icon-sm">rocket_launch</span>Get started</span>
-<h2 class="mt-4">Ready to transform complaint management?</h2>
-<p>Join the students and faculty who made their campus communication faster, fairer and more
-transparent.</p>
+<div class="reveal sit-close">
+<h2>Got something broken? Put it in the queue.</h2>
 <div class="cluster">
-<a class="btn btn--light btn--lg" href="{{ url_for('student_register') }}">
-<span class="material-symbols-outlined icon-sm">person_add</span>Get started free
-</a>
-<a class="btn btn--outline btn--lg" href="{{ url_for('student_login') }}" style="border-color:rgba(255,255,255,.5);color:#fff">
-<span class="material-symbols-outlined icon-sm">login</span>Sign in
+<button class="btn btn--primary btn--lg" type="button" onclick="openComplainModal()">
+<span class="material-symbols-outlined icon-sm">edit_note</span> File a complaint
+</button>
+<a class="btn btn--outline btn--lg" href="{{ url_for('track_complaint') }}">
+<span class="material-symbols-outlined icon-sm">search</span> Track a case
 </a>
 </div>
 </div>
