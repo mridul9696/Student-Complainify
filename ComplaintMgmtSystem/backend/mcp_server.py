@@ -6,8 +6,8 @@ from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 import pymysql
-from classifier import auto_categorize, predict_top3, detect_anomaly
-from sentiment import analyze_sentiment
+from classifier import auto_categorize, predict_top3, detect_anomaly  # type: ignore[reportMissingImports]
+from sentiment import analyze_sentiment  # type: ignore[reportMissingImports]
 
 server = Server("complainify")
 
