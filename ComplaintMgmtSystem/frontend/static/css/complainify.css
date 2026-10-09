@@ -559,6 +559,10 @@ body h6 { font-size: .8125rem; }
 .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .grid-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+/* Asymmetric lead: first tile spans 2 columns on desktop, breaks 4-equal monotony */
+@media (min-width: 1100px) {
+  .grid-4 .tile--lead { grid-column: span 2; }
+}
 .split { display: grid; grid-template-columns: 1.12fr .88fr; gap: var(--sp-6); align-items: start; }
 .gap-sm { gap: var(--sp-3); }
 .gap-lg { gap: var(--sp-8); }
@@ -609,7 +613,7 @@ body h6 { font-size: .8125rem; }
 .btn.is-disabled { opacity: .55; pointer-events: none; }
 
 .btn--primary { background: var(--grad-brand); color: #fff; box-shadow: var(--shadow-md); }
-.btn--primary:hover { box-shadow: var(--glow-blue); filter: brightness(1.06); }
+.btn--primary:hover { box-shadow: var(--glow-blue); filter: brightness(1.06); transform: translateY(-1px); }
 
 .btn--ai { background: var(--grad-ai); color: #fff; box-shadow: var(--shadow-md); }
 .btn--ai:hover { box-shadow: var(--glow-blue); filter: brightness(1.06); }
